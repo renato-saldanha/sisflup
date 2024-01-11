@@ -1,0 +1,70 @@
+.container {
+  display: grid;
+  margin: 0 5%;
+  margin-top: 50px;  
+  width: 150px;
+}
+
+.campos {
+  display: grid;
+  justify-content: left;
+  
+}
+
+.camposDividido {
+  display: flex;
+  align-items: baseline;
+  /* justify-content: space-around;   */
+  margin-bottom: 14px;
+}
+
+.camposDividido label {
+  width: 150px;
+}
+
+.camposDividido input {
+  margin-right: 150px;
+}
+
+.camposDividido input[id=nomeCliente],
+.camposDividido input[id=endereco],
+.camposDividido input[id=arquiteto]  {
+  width: 400px;
+}
+
+.campos input {
+  font-weight: normal;
+}
+.botoes button,
+.campos input,
+.botoes label,
+.campos label {
+  font-size: 17px;
+}
+
+.campos textarea[name="observacoes"] {
+  height: 160px;
+  width: 60%;
+  resize: none;
+  padding: 2px 10px;
+  color: #474747;
+  font-size: 15px;
+}
+
+.dividido {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+}
+
+.botoes {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.botoes button {
+  width: 30%;
+  height: 30px;
+  font-size: 20px;
+}

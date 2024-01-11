@@ -1,0 +1,27 @@
+.container {
+  width: 100%;
+  
+}
+
+.consultas {
+  display: flex;  
+}
+
+.consultas a {
+  margin-left: 25px;
+}
+
+.atividades {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 13px;
+}
+
+.atividades a {
+  text-align: center;
+  width: 12.4%;
+  height: calc(100vh - 300px);
+  margin: 0 .6%; 
+  word-wrap: break-word;
+}

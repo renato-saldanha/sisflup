@@ -1,0 +1,22 @@
+.container {
+  width: 100%;
+  display: grid;
+  margin-top: 50px;
+  margin-bottom: 7px;
+}
+
+.container button {
+  margin-left: 25px;
+}
+
+.titulo {
+  color: var(--white);
+  border: 2px solid;
+  border-radius: 4px;
+  background-color: var(--blue-100);
+  padding: 2px 7px;
+  display: flex;
+  margin: 0 25%;
+  display: grid;
+  text-align: center;
+}

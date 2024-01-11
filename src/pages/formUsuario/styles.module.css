@@ -1,0 +1,34 @@
+.container {
+  width: 100%;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40px;
+}
+
+.form {
+  display: grid;
+  background-color: var(--blue-200);
+  padding: 10px;
+  border: 1;
+  border-radius: 15px;
+  border-color: var(--blue-500);
+}
+
+
+.botaoDropDown {
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.botoes {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.botoes button {
+  flex: 1;
+  cursor: pointer;
+}

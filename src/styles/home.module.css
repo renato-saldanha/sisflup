@@ -1,0 +1,33 @@
+.container {
+  padding-bottom: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 90px;
+}
+
+.form {
+  display: grid;
+  background-color: var(--blue-200);
+  border-radius: 8px;
+  width: calc(24%+15px);
+  padding: 15px;
+}
+
+.identificacao {
+  display: flex;
+  align-items: center;
+}
+
+
+
+.identificacao input[id="id"] {
+  width: 56px;
+  margin-right: 9px;
+}
+
+.identificacao span {
+  color: var(--white);
+  padding: 0 5px;
+  font-size: 20px;  
+}

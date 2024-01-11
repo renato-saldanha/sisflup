@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,700;1,400&display=swap");
+
+:root {
+  --white: #fff;
+  --black: #0f0f0f;
+
+  --gray-300: #ded7d7;
+
+  --blue-100: #73b8f9;
+  --blue-200: #3e9bf2;
+  --blue-300: #3686d2;
+  --blue-400: #1d88ea;
+
+  --orange-100: #e7a567;
+  --orange-300: #f0790b;
+
+  --red-400: #fa5050;
+  --red-600: #ff0000;
+
+  --green-400: #6db129;
+  --green-600: #428400;
+
+  font-family: "Roboto", sans-serif;
+
+  width: 100%;
+  max-width: 1680;
+  height: calc(100vh - 42px);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--blue-300);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+label {
+  color: var(--white);
+  font-size: 1.5rem;
+}
+
+input,
+button[id="dropdown"] {
+  background-color: var(--blue-100);
+  color: var(--white);
+  padding: 7px 10px;
+  font-weight: bold;
+  border: 0;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  border-radius: 9px;
+  font-size: 1.4rem;
+  border: 0;
+}
+
+[id=dropdownList] {
+  background-color: var(--blue-100);
+  opacity: 0.9;
+  color: var(--white);
+  width: auto;  
+  font-size: 22px;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+input::placeholder {
+  font-size: 20px;
+  font-weight: normal;
+  color: var(--gray-300);
+}
+
+button,
+a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white);
+  background-color: var(--orange-300);
+  transition: all 0.2s;
+  padding: 7px 17px;
+  font-size: 23px;
+  font-weight: bold;
+}
+
+button:hover,
+a:hover {
+  background-color: var(--orange-100);
+  transform: scale(1.06);
+}
