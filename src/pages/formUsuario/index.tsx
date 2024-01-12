@@ -5,55 +5,13 @@ import { PermissaoProps, SetorProps } from "@/src/uteis/interfaces"
 import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
 import { CommandEmpty, CommandInput } from "cmdk"
 import { Check, ChevronDownIcon, ChevronDownSquare, ChevronsUpDown } from "lucide-react"
-import { ChangeEvent, FormEvent, FormEventHandler, MouseEventHandler, useState } from "react"
+import { ChangeEvent, FormEvent, FormEventHandler, MouseEventHandler, useEffect, useState } from "react"
 
 import styles from './styles.module.css'
 import { useRouter } from "next/router"
 import { constsComponents } from "@/src/uteis/constIdComponents"
 import Head from "next/head"
-
-const setores: SetorProps[] = [
-  {
-    id: 0,
-    nome: "Administração",
-    descricao: "0 - Administração"
-  },
-  {
-    id: 1,
-    nome: "Vendas",
-    descricao: "1 - Vendas"
-  },
-  {
-    id: 2,
-    nome: "Medição",
-    descricao: "2 - Medição"
-  },
-  {
-    id: 3,
-    nome: "Prod.Serra",
-    descricao: "3 - Prod.Serra"
-  },
-  {
-    id: 4,
-    nome: "Prod.Acabamento",
-    descricao: "4 - Prod.Acabamento"
-  },
-  {
-    id: 5,
-    nome: "Entrega",
-    descricao: "5 - Entrega"
-  },
-  {
-    id: 6,
-    nome: "Instalação",
-    descricao: "6 - Instalação"
-  },
-  {
-    id: 7,
-    nome: "Pós-Venda",
-    descricao: "7 - Pós-Venda"
-  },
-]
+import axios from "axios"
 
 const permissoes = [
   {
@@ -79,15 +37,19 @@ export default function FormUsuario() {
   const [permissao, setPermissao] = useState<PermissaoProps>()
   const [abrirSetor, setAbrirSetor] = useState(false)
   const [abrirPermissao, setAbrirPermissao] = useState(false)
+  const [setores, setSetores] = useState<SetorProps[]>([])
 
-  const history = useRouter()
-
+  
   const setorSelecionado = {
     id,
     nomeUsuario,
     senha,
     idPermissao
   }
+
+  useEffect(()=> {
+    axios.get("http://localhost")
+  }, [])
 
   function handleSelectSetor(c: string) {
     const setorSelecionado: SetorProps | undefined = setores.find(s => s.id === parseInt(c[0]))

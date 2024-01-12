@@ -80,9 +80,9 @@ export default function Home() {
 
     if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') {
       e.preventDefault();
-    } else if (/[0-9]/.test(e.target.value)
+    } else if (/[0-9]/.test(e.key)
       && e.key === 'Backspace'
-      && e.target.value.length <= 1) {
+      && e.key.length <= 1) {
       e.preventDefault();
       setId(0)
     }
