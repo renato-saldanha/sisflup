@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
 import { FormEvent, useState } from 'react'
-import '../../../styles/globals.css'
 import styles from './styles.module.css'
 
 interface FormAtividadeProps {
