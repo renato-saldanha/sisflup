@@ -69,7 +69,8 @@ button[id="dropdown"] {
   border-radius: 8px;
   padding: 0 16px;
   display: flex;
-  justify-content: space-between;
+  
+  text-align: left;
 }
 
 input::placeholder {

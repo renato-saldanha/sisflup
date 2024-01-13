@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover
 import { CommandEmpty, CommandInput } from "cmdk"
 import { Check, ChevronDownIcon, ChevronDownSquare, ChevronsUpDown, PencilIcon, SearchIcon as Search, Trash2Icon } from "lucide-react"
 import Link from "next/link"
-import { ChangeEvent, FormEvent, FormEventHandler, MouseEventHandler, useContext, useState } from "react"
+import { ChangeEvent, FormEvent, FormEventHandler, MouseEventHandler, useContext, useEffect, useState } from "react"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 import styles from './styles.module.css'
@@ -14,6 +14,8 @@ import { constsComponents } from "@/src/uteis/constIdComponents"
 import Head from "next/head"
 import { usePathname } from "next/navigation"
 import { UsuarioLogadoContext } from "@/src/contexts/usuario"
+import axios from "axios"
+import { config } from "@/src/uteis/config"
 
 
 
@@ -87,13 +89,14 @@ export default function Consulta() {
   const [abrirPermissao, setAbrirPermissao] = useState(false)
   const [descricaoSetor, setDescricaoSetor] = useState("Selecione o setor")
   const { paginaAtiva } = useContext(UsuarioLogadoContext)
+  const ipServidor = config.server;
 
   const permissoes = [
     { permissao: "0 - Administrador" },
     { permissao: "1 - Gestor" },
   ]
 
-  const paginaAtivaSingular = paginaAtiva.substring(0, paginaAtiva.length -1)
+  const paginaAtivaSingular = paginaAtiva.substring(0, paginaAtiva.length - 1)
 
   function handleChangeSelectSetor(c: string) {
     // const setorSelecionado = setores.find(s => s.id === parseInt(c[0])) ?
@@ -133,7 +136,7 @@ export default function Consulta() {
               {setores.find(setor => setor.descricao === descricaoSetor)?.descricao
                 ? setores.find(setor => setor.descricao === descricaoSetor)?.descricao
                 : "Selecione o filtro"}
-              <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              <ChevronDownIcon />
             </Button>
           </PopoverTrigger>
           <PopoverContent id={constsComponents.dropdownList} >

@@ -27,7 +27,7 @@ export default function Home() {
   }
 
   function focus() {
-    inputSenha?.current?.focus();
+    inputSenha?.current?.select();
   }
 
   useEffect(() => {
@@ -54,7 +54,8 @@ export default function Home() {
             }
           })
           .catch(error => {
-            alert(error)
+            alert(error.response.data.resposta)
+            focus()
             e.preventDefault()
           })
       } else {

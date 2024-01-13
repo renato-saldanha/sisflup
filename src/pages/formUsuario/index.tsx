@@ -5,13 +5,15 @@ import { PermissaoProps, SetorProps } from "@/src/uteis/interfaces"
 import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
 import { CommandEmpty, CommandInput } from "cmdk"
 import { Check, ChevronDownIcon, ChevronDownSquare, ChevronsUpDown } from "lucide-react"
-import { ChangeEvent, FormEvent, FormEventHandler, MouseEventHandler, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, FormEventHandler, MouseEventHandler, useContext, useEffect, useState } from "react"
 
 import styles from './styles.module.css'
 import { useRouter } from "next/router"
 import { constsComponents } from "@/src/uteis/constIdComponents"
 import Head from "next/head"
 import axios from "axios"
+import { config } from "@/src/uteis/config"
+import { UsuarioLogadoContext } from "@/src/contexts/usuario"
 
 const permissoes = [
   {
@@ -27,6 +29,7 @@ const permissoes = [
 ]
 
 export default function FormUsuario() {
+  const { paginaAtiva } = useContext(UsuarioLogadoContext)
   const id = 0;
   const [descricaoSetor, setDescricaoSetor] = useState("Selecione o setor")
   const [descricaoPermissao, setDescricaoPermissao] = useState("Selecione a permissão")
@@ -37,9 +40,9 @@ export default function FormUsuario() {
   const [permissao, setPermissao] = useState<PermissaoProps>()
   const [abrirSetor, setAbrirSetor] = useState(false)
   const [abrirPermissao, setAbrirPermissao] = useState(false)
-  const [setores, setSetores] = useState<SetorProps[]>([])
+  const [setoresDropdown, setSetoresDropdown] = useState<SetorProps[]>([]);
+  const ipServidor = config.server;
 
-  
   const setorSelecionado = {
     id,
     nomeUsuario,
@@ -47,12 +50,30 @@ export default function FormUsuario() {
     idPermissao
   }
 
-  useEffect(()=> {
-    axios.get("http://localhost")
-  }, [])
+  const tabela = paginaAtiva.normalize('NFD').replace(/[\u0300-\u036f]/g, "") //Remove acentos
 
-  function handleSelectSetor(c: string) {
-    const setorSelecionado: SetorProps | undefined = setores.find(s => s.id === parseInt(c[0]))
+
+  useEffect(() => {
+    // if (setoresDropdown.length > 0) return
+    axios
+      .get(`${ipServidor}/setor/getListaSetores`)
+      .then(response => {
+        if (response.data && response.data.length > 0) {
+          const setoresComDescricao = response.data.map((setor: SetorProps) => {
+            setor.descricao = `${setor.id} - ${setor.nome}`
+            return setor
+          })
+
+          setSetoresDropdown(setoresComDescricao)
+
+
+        }
+      })
+      .catch(e => alert(`Ocorreu um erro ao gerar a lista de Setore: ${e.response.data.resposta}`))
+  }, [!setoresDropdown])
+
+  function handleSelectSetorDropdown(c: string) {
+    const setorSelecionado: SetorProps | undefined = setoresDropdown.find(s => s.id === parseInt(c[0]))
     if (setorSelecionado) {
       setDescricaoSetor(setorSelecionado.descricao)
       setSetor(setorSelecionado)
@@ -88,26 +109,25 @@ export default function FormUsuario() {
           name="nome"
           value={nomeUsuario}
           onChange={e => setNomeUsuario(e.target.value)} />
-
         <label>Setor</label>
         <Popover open={abrirSetor} onOpenChange={setAbrirSetor}>
           <PopoverTrigger asChild>
             <Button id={constsComponents.dropdown}>
-              {setores.find(setor => setor.descricao === descricaoSetor)?.descricao
-                ? setores.find(setor => setor.descricao === descricaoSetor)?.descricao
+              {setoresDropdown.find(setor => setor.descricao === descricaoSetor)?.descricao
+                ? setoresDropdown.find(setor => setor.descricao === descricaoSetor)?.descricao
                 : "Selecione o setor"}
-              <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              <ChevronDownIcon />
             </Button>
           </PopoverTrigger>
           <PopoverContent id={constsComponents.dropdownList}>
             <Command >
-              {setores.map((setor, i) =>
-                <CommandItem 
+              {setoresDropdown.map((setor, i) =>
+                <CommandItem
                   key={setor.id}
                   value={setor.descricao}
-                  onSelect={handleSelectSetor}
+                  onSelect={handleSelectSetorDropdown}
                 >
-                  {setores[i].descricao}
+                  {setoresDropdown[i].descricao}
                 </CommandItem>
               )}
             </Command>
@@ -133,7 +153,7 @@ export default function FormUsuario() {
               <ChevronDownIcon />
             </Button>
           </PopoverTrigger>
-          <PopoverContent  id={constsComponents.dropdownList}>
+          <PopoverContent id={constsComponents.dropdownList}>
             <Command >
               {permissoes.map((permissao, i) =>
                 <CommandItem
@@ -148,7 +168,7 @@ export default function FormUsuario() {
           </PopoverContent>
         </Popover>
         <div className={styles.botoes}>
-          <button>Salvar</button>          
+          <button>Salvar</button>
         </div>
       </form >
 

@@ -13,6 +13,7 @@ import { path } from '../../uteis/constPath'
 export default function AtividadesGerais() {
   const { usuarioLogado, setPaginaAtiva } = useContext(UsuarioLogadoContext)
   const history = useRouter()
+  const PERMISSAO_ADMIN = 0
 
   useEffect(() => {
     if (!usuarioLogado) {
@@ -26,10 +27,12 @@ export default function AtividadesGerais() {
         <title> Atividades Gerais </title>
       </Head>
       <div className={styles.container}>
-        <div className={styles.consultas}>
-          <Link onClick={() => setPaginaAtiva("Usuários")} href={path.consultaUsuarios}>Usuarios</Link>
-          <Link onClick={() => setPaginaAtiva("Atividades")} href={path.consultaAtividades}>Atividades</Link>
-        </div>
+        {usuarioLogado?.id_permissao === PERMISSAO_ADMIN && (
+          <div className={styles.consultas}>
+            <Link onClick={() => setPaginaAtiva("Usuários")} href={path.consultaUsuarios}>Usuarios</Link>
+            <Link onClick={() => setPaginaAtiva("Atividades")} href={path.consultaAtividades}>Atividades</Link>
+          </div>
+        )}
         <div className={styles.atividades}>
           <Link style={{ backgroundColor: '#F6FA2E' }} href={path.atividadeEspecifica}>Vendas</Link>
           <Link style={{ backgroundColor: '#73B8F9' }} href={path.atividadeEspecifica}>Medição</Link>
