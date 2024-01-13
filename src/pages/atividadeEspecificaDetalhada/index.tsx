@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import FormAtividade from '../components/FormAtividade'
+import FormAtividade from '../../components/FormAtividade'
 import styles from './styles.module.css'
 import UsuarioLogadoProvider, { UsuarioLogadoContext } from '@/src/contexts/usuario'
 import { useRouter } from 'next/router'

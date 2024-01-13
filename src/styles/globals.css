@@ -46,7 +46,7 @@ label {
 }
 
 input,
-button[id="dropdown"] {
+button[id=dropdown] {
   background-color: var(--blue-100);
   color: var(--white);
   padding: 7px 10px;
