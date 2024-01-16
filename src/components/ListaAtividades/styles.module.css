@@ -1,0 +1,79 @@
+.tabela {
+  justify-content: left;
+  margin-top: 20px;
+  margin: 20px calc(15vw + 100px) 0 0;
+  color: var(--white);
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.tableRow {
+  text-align: left;
+  width: 100%;
+}
+
+
+.colunaId,
+.colunaCliente,
+.colunaEndereco,
+.colunaResponsavel,
+.colunaDataEntrega,
+.colunaBotoes {
+  border: 1px solid;
+  padding: 0 15px 0 5px;
+  font-size: 16px;
+}
+
+.colunaId {
+  width: 45px;
+  text-align: center;
+  padding: 0;
+  flex:3
+}
+
+.colunaCliente {
+  width: 350px;
+}
+.colunaEndereco {
+  width: 390px;
+}
+
+.colunaResponsavel {
+  width: 150px;
+}
+
+.colunaDataEntrega {
+  text-align: center;
+  width: 150px;
+}
+
+.colunaBotoes {
+  display: flex;
+  width: 120px;
+  justify-content: space-evenly;
+}
+
+.colunaBotoes button,
+.colunaBotoes a {
+  background: transparent;
+  transition: all 0.2s;
+  border-radius: 6px;
+  margin: 8px 0 8px 0;
+  padding: 0;
+}
+
+.botaoAlterar {
+  color: var(--green-400);
+}
+
+.botaoAlterar :hover {
+  transform: scale(1.1);
+}
+
+.botaoDeletar {
+  color: var(--red-400);
+}
+
+.botaoDeletar :hover {
+  transform: scale(1.1);
+}

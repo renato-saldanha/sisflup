@@ -5,17 +5,18 @@ import styles from '../styles/home.module.css'
 import stylesComponetes from '../styles/stylesComponentes.module.css'
 
 import { path } from '../uteis/constPath'
-import { iUsuario } from '../uteis/interfaces'
+import { UsuarioProps } from '../uteis/interfaces'
 import Head from 'next/head'
 import Link from 'next/link'
 import UsuarioLogadoProvider, { UsuarioLogadoContext } from '../contexts/usuario'
+import { config } from '../uteis/config'
 
 export default function Home() {
   const [id, setId] = useState<number | string>()
   const [nome, setNome] = useState<string>("")
   const [senha, setSenha] = useState<string>("")
-  const [usuarioIdentificacao, setUsuarioIdentificacao] = useState<iUsuario | null>(null)
-  const [listaUsuariosSistema, setListaUsuariosSistema] = useState<iUsuario[]>([])
+  const [usuarioIdentificacao, setUsuarioIdentificacao] = useState<UsuarioProps | null>(null)
+  const [listaUsuariosSistema, setListaUsuariosSistema] = useState<UsuarioProps[]>([])
 
   const setUsuarioLogado = useContext(UsuarioLogadoContext).setUsuarioLogado
 
@@ -32,7 +33,7 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:4000/getListaUsuarios')
+      .get(`${config.server}/usuario/getListaUsuarios`)
       .then(r => {
         if (r.data && r.data.length > 0) {
           setListaUsuariosSistema(r.data)
@@ -42,13 +43,19 @@ export default function Home() {
 
   function handleEntrar(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
+      if (senha === "") {
+        alert("Informe a senha")
+        e.preventDefault()
+        return
+      }
+
       const usuario = listaUsuariosSistema.filter(u => u.id === usuarioIdentificacao?.id)[0]
       if (usuario) {
         axios
-          .get(`http://localhost:4000/login/${id}&${senha}`)
+          .get(`${config.server}/login/${id}&${senha}`)
           .then(r => {
             if (r.data) {
-              let usuarioRecebido: iUsuario = r.data.usu
+              let usuarioRecebido: UsuarioProps = r.data.usu
               setUsuarioLogado(usuarioRecebido)
               entrar()
             }

@@ -45,12 +45,17 @@ label {
   font-size: 1.5rem;
 }
 
+button,
+a ,
+input {
+  font-weight: bold;
+}
+
 input,
 button[id=dropdown] {
   background-color: var(--blue-100);
   color: var(--white);
   padding: 7px 10px;
-  font-weight: bold;
   border: 0;
   justify-content: space-between;
   margin-bottom: 8px;
@@ -69,7 +74,7 @@ button[id=dropdown] {
   border-radius: 8px;
   padding: 0 16px;
   display: flex;
-  
+  justify-content: left;
   text-align: left;
 }
 
@@ -92,8 +97,7 @@ a {
   background-color: var(--orange-300);
   transition: all 0.2s;
   padding: 7px 17px;
-  font-size: 23px;
-  font-weight: bold;
+  font-size: 23px;  
 }
 
 button:hover,

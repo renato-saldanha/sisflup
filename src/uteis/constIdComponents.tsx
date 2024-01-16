@@ -1,6 +1,7 @@
 export const constsComponents = {
   button: "button",
   dropdown: "dropdown",
-  dropdownList: "dropdownList"
+  dropdownList: "dropdownList",
+  dropdownListItem: "dropdownListItem"
 }
 

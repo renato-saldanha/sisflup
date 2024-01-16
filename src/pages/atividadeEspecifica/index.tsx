@@ -5,10 +5,10 @@ import { path } from '@/src/uteis/constPath'
 import { useContext, useEffect } from 'react'
 import UsuarioLogadoProvider, { UsuarioLogadoContext } from '@/src/contexts/usuario'
 import { useRouter } from 'next/router'
-import { iUsuario } from '@/src/uteis/interfaces'
+import { UsuarioProps } from '@/src/uteis/interfaces'
 
 interface AtividadeEspecificaProps {
-  usuarioLogado: iUsuario
+  usuarioLogado: UsuarioProps
 }
 
 export default function AtividadeEspecifica() {

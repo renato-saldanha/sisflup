@@ -1,0 +1,1 @@
+export const PERMISSAO_ADMIN = 1

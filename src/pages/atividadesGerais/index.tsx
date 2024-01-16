@@ -5,15 +5,15 @@ import { useContext, useEffect } from "react"
 import Head from 'next/head';
 import UsuarioLogadoProvider, { UsuarioLogadoContext } from '@/src/contexts/usuario';
 import { useRouter } from 'next/router';
-import { iUsuario } from '@/src/uteis/interfaces';
+import { UsuarioProps } from '@/src/uteis/interfaces';
 import Link from 'next/link';
 import { path } from '../../uteis/constPath'
+import { PERMISSAO_ADMIN } from '@/src/uteis/consts';
 
 
 export default function AtividadesGerais() {
   const { usuarioLogado, setPaginaAtiva } = useContext(UsuarioLogadoContext)
-  const history = useRouter()
-  const PERMISSAO_ADMIN = 0
+  const history = useRouter()  
 
   useEffect(() => {
     if (!usuarioLogado) {
@@ -29,7 +29,7 @@ export default function AtividadesGerais() {
       <div className={styles.container}>
         {usuarioLogado?.id_permissao === PERMISSAO_ADMIN && (
           <div className={styles.consultas}>
-            <Link onClick={() => setPaginaAtiva("Usuários")} href={path.consultaUsuarios}>Usuarios</Link>
+            <Link onClick={() => setPaginaAtiva("Usuarios")} href={path.consultaUsuarios}>Usuarios</Link>
             <Link onClick={() => setPaginaAtiva("Atividades")} href={path.consultaAtividades}>Atividades</Link>
           </div>
         )}

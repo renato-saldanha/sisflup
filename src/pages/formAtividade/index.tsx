@@ -1,40 +1,42 @@
 import { useRouter } from 'next/router'
 import { FormEvent, useState } from 'react'
 import styles from './styles.module.css'
+import { AtividadeProps } from '@/src/uteis/interfaces'
 
-interface FormAtividadeProps {
-  mostrarBtnConcluir?: boolean,
-  mostrarBtnSalvar?: boolean,
-}
-
-export default function FormAtividade({ mostrarBtnConcluir = true, mostrarBtnSalvar = false }: FormAtividadeProps) {
-  const [nomeCliente, setNomeCliente] = useState("")
-  const [endereco, setEndereco] = useState("")
-  const [vendas, setVendas] = useState("")
-  const [medicao, setMedicao] = useState("")
-  const [producaoSerra, setProducaoSerra] = useState("")
-  const [producaoAcabamento, setProducaoAcabamento] = useState("")
-  const [entrega, setEntrega] = useState("")
-  const [instalacao, setInstalacao] = useState("")
-  const [arquiteto, setArquiteto] = useState("")
-  const [dataEntrega, setDataEntrega] = useState<Date>()
-  const [observacoes, setObservacoes] = useState("")
-
+export default function FormAtividade() {
   const history = useRouter();
 
-  const atividade = {
-    nomeCliente,
-    endereco,
-    vendas,
-    medicao,
-    producaoSerra,
-    producaoAcabamento,
-    entrega,
-    instalacao,
-    arquiteto,
-    dataEntrega,
-    observacoes
+  const atividade: AtividadeProps = history.query.atividade ? JSON.parse(history.query.atividade.toString()) : {}
+  const isCadastro = history.query.isCadastro? JSON.parse(history.query.isCadastro.toString()) : false
+
+  const id = atividade ? atividade.id : -1
+  const [nomeCliente, setNomeCliente] = useState(atividade ? atividade.nome_cliente : "")
+  const [endereco, setEndereco] = useState(atividade ? atividade.endereco_cliente : "")
+  const [vendas, setVendas] = useState(atividade ? atividade.responsavel_vendas : "")
+  const [medicao, setMedicao] = useState(atividade ? atividade.responsavel_medicao : "")
+  const [producaoSerra, setProducaoSerra] = useState(atividade ? atividade.responsavel_producao_serra : "")
+  const [producaoAcabamento, setProducaoAcabamento] = useState(atividade ? atividade.responsavel_producao_acabamento : "")
+  const [entrega, setEntrega] = useState(atividade ? atividade.responsavel_entrega : "")
+  const [instalacao, setInstalacao] = useState(atividade ? atividade.responsavel_instalacao : "")
+  const [arquiteto, setArquiteto] = useState(atividade ? atividade.nome_arquiteto : "")
+  const [dataEntrega, setDataEntrega] = useState<Date | null>(atividade ? atividade.data_entrega : null)
+  const [observacoes, setObservacoes] = useState(atividade ? atividade.observacao : "")
+
+  const atividadePesistencia: AtividadeProps = {
+    id,
+    nome_cliente: nomeCliente,
+    endereco_cliente: endereco,
+    data_entrega: dataEntrega,
+    nome_arquiteto: arquiteto,
+    responsavel_vendas: vendas,
+    responsavel_medicao: medicao,
+    responsavel_producao_acabamento: producaoAcabamento,
+    responsavel_producao_serra: producaoSerra,
+    responsavel_entrega: entrega,
+    responsavel_instalacao: instalacao,
+    observacao: observacoes
   }
+
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -77,7 +79,6 @@ export default function FormAtividade({ mostrarBtnConcluir = true, mostrarBtnSal
             type='date'
           />
         </div>
-
 
         <div className={styles.camposDividido}>
           <label>Vendas</label>
@@ -136,8 +137,8 @@ export default function FormAtividade({ mostrarBtnConcluir = true, mostrarBtnSal
           onChange={e => setObservacoes(e.target.value)} />
       </div>
       <div className={styles.botoes}>
-        {mostrarBtnConcluir && <button >Concluir Atividade</button>}
-        {mostrarBtnSalvar && <button>Salvar</button>}
+        {!isCadastro && <button >Concluir Atividade</button>}
+        {isCadastro && <button>Salvar</button>}
       </div>
     </form>
   )

@@ -1,117 +1,92 @@
 import { Button } from "@/components/ui/button"
 import { Command, CommandItem } from "@/components/ui/command"
-import { cn } from "@/lib/utils"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { path } from "@/src/uteis/constPath"
 import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
-import { CommandEmpty, CommandInput } from "cmdk"
-import { Check, ChevronDownIcon, ChevronDownSquare, ChevronsUpDown, PencilIcon, SearchIcon as Search, Trash2Icon } from "lucide-react"
+import { ChevronDownIcon, PencilIcon, SearchIcon, Trash2Icon } from "lucide-react"
 import Link from "next/link"
-import { ChangeEvent, FormEvent, FormEventHandler, MouseEventHandler, useContext, useEffect, useState } from "react"
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { createRef, useContext, useEffect, useState } from "react"
 
-import styles from './styles.module.css'
-import { constsComponents } from "@/src/uteis/constIdComponents"
-import Head from "next/head"
-import { usePathname } from "next/navigation"
 import { UsuarioLogadoContext } from "@/src/contexts/usuario"
-import axios from "axios"
 import { config } from "@/src/uteis/config"
+import { constsComponents } from "@/src/uteis/constIdComponents"
+import { AtividadePesquisaProps, UsuarioPesquisaProps } from "@/src/uteis/interfaces"
+import axios from "axios"
+import Head from "next/head"
+import { useRouter } from "next/router"
+import styles from './styles.module.css'
+import ListaUsuarios from "@/src/components/ListaUsuarios"
+import ListaAtividades from "@/src/components/ListaAtividades"
 
 
-
-interface SetorProps {
-  id: number,
-  nomeSetor: string,
+interface FiltroProps {
   descricao: string,
+  filtro: string
 }
 
-const setores: SetorProps[] = [
-  {
-    id: 0,
-    nomeSetor: "Administração",
-    descricao: "0 - Administração"
-  },
-  {
-    id: 1,
-    nomeSetor: "Vendas",
-    descricao: "1 - Vendas"
-  },
-  {
-    id: 2,
-    nomeSetor: "Medição",
-    descricao: "2 - Medição"
-  },
-  {
-    id: 3,
-    nomeSetor: "Prod.Serra",
-    descricao: "3 - Prod.Serra"
-  },
-  {
-    id: 4,
-    nomeSetor: "Prod.Acabamento",
-    descricao: "4 - Prod.Acabamento"
-  },
-  {
-    id: 5,
-    nomeSetor: "Entrega",
-    descricao: "5 - Entrega"
-  },
-  {
-    id: 6,
-    nomeSetor: "Instalação",
-    descricao: "6 - Instalação"
-  },
-  {
-    id: 7,
-    nomeSetor: "Pós-Venda",
-    descricao: "7 - Pós-Venda"
-  },
-]
-
-const usuarios = [
-  {
-    id: 0,
-    nome: "Administrador",
-    setor: "Adm.",
-    permissao: "Administrador"
-  },
-  {
-    id: 1,
-    nome: "Renato Saldanha",
-    setor: "Vendas",
-    permissao: "Gestor"
-  }
-]
-
 export default function Consulta() {
+  const { paginaAtiva, usuarioLogado } = useContext(UsuarioLogadoContext)
+
+  const [lista, setLista] = useState<UsuarioPesquisaProps[] & AtividadePesquisaProps[]>()
+
+  const nomeTabela = paginaAtiva.normalize('NFD').replace(/[\u0300-\u036f]/g, "") //Remove acentos
+
   const [descricao, setDescricao] = useState("")
   const [abrirSetor, setAbrirSetor] = useState(false)
-  const [abrirPermissao, setAbrirPermissao] = useState(false)
-  const [descricaoSetor, setDescricaoSetor] = useState("Selecione o setor")
-  const { paginaAtiva } = useContext(UsuarioLogadoContext)
-  const ipServidor = config.server;
-
-  const permissoes = [
-    { permissao: "0 - Administrador" },
-    { permissao: "1 - Gestor" },
-  ]
+  const [filtroSelecionado, setFiltroSelecionado] = useState<FiltroProps>()
 
   const paginaAtivaSingular = paginaAtiva.substring(0, paginaAtiva.length - 1)
+  const pathTipoLista = paginaAtiva.substring(0, paginaAtiva.length - 1).toLowerCase()
 
-  function handleChangeSelectSetor(c: string) {
-    // const setorSelecionado = setores.find(s => s.id === parseInt(c[0])) ?
-    //   setNomeSetor(setorSelecionado.nomeSetor)
-    // setSetor
-    // setAbrirSetor(false)
+  const history = useRouter()
+  const inputDescricao = createRef<HTMLInputElement>()
+
+  const filtrosDropdown = () => {
+    switch (nomeTabela.toLowerCase()) {
+      case 'usuarios':
+        return [
+          { descricao: 'Nome', filtro: "usuarios.nome" },
+          { descricao: 'Setor', filtro: "setor.nome" }
+        ]
+      case 'atividades':
+        return [
+          { descricao: "Cliente", filtro: "usuarios.nome" },
+          { descricao: "Setor", filtro: "setor.nome" },
+          { descricao: "Responsavel", filtro: "responsavel" },// fazer regra no backend para buscar todos os responsaveis
+          { descricao: "Arquiteto", filtro: "atividades.nome_arquiteto" }
+        ]
+    }
   }
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
+
+  useEffect(() => {
+    if (!usuarioLogado) history.push("/")
+
+  }, [usuarioLogado])
+
+
+  function handleSelectFiltro(c: string) {
+    const filtroSelecionado = filtrosDropdown()?.find(s => s.filtro.toLowerCase() === c.toLowerCase())
+    setFiltroSelecionado(filtroSelecionado)
+    setAbrirSetor(false)
   }
 
-  function handleSelectSetor() {
+  function handlePesquisar() {
+    if (!filtroSelecionado) {
+      alert("Favor selecionar um filtro!")
+      return
+    }
 
+    axios
+      .get(`${config.server}/${pathTipoLista}/getLista${nomeTabela}/${descricao === "" ? "all" : descricao}&${filtroSelecionado?.filtro}`)
+      .then(r => {
+        if (r.data) setLista(r.data)
+      })
+      .catch(e => {
+        alert(e.response.data.resposta)
+      })
   }
+
 
   return (
     <div className={styles.container}>
@@ -119,71 +94,53 @@ export default function Consulta() {
         <title>Consulta de {paginaAtiva}</title>
       </Head>
       <div className={styles.botoesHeader}>
-        <Link id={constsComponents.button} href={path.cadastroUsuario}>+ {paginaAtivaSingular}</Link>
+        <Link id={constsComponents.button} href={"form" + paginaAtivaSingular}>+ {paginaAtivaSingular}</Link>
       </div>
       <div className={styles.camposPesquisa} >
         <label>Descrição</label>
         <input
+          autoFocus
           type="text"
           id="descricao"
           name="descricao"
           value={descricao}
+          ref={inputDescricao}
           onChange={e => setDescricao(e.target.value)} />
         <label>Filtro</label>
         <Popover open={abrirSetor} onOpenChange={setAbrirSetor}>
           <PopoverTrigger asChild>
             <Button id={constsComponents.dropdown} className={styles.botaoDropDown}>
-              {setores.find(setor => setor.descricao === descricaoSetor)?.descricao
-                ? setores.find(setor => setor.descricao === descricaoSetor)?.descricao
+              {filtrosDropdown()?.find(filtro => filtro.descricao === filtroSelecionado?.descricao)?.descricao
+                ? filtrosDropdown()?.find(filtro => filtro.descricao === filtroSelecionado?.descricao)?.descricao
                 : "Selecione o filtro"}
               <ChevronDownIcon />
             </Button>
           </PopoverTrigger>
           <PopoverContent id={constsComponents.dropdownList} >
-            <Command className={styles.lista}>
-              {setores.map((setor, i) =>
+            <Command style={{ width: 300 }}>
+              {filtrosDropdown()?.map((filtro, i) =>
                 <CommandItem
-                  key={setor.id}
-                  value={setor.descricao}
-                  onSelect={handleSelectSetor}
+                  key={filtro.filtro}
+                  value={filtro.filtro}
+                  onSelect={handleSelectFiltro}
                 >
-                  {setores[i].descricao}
+                  {filtrosDropdown()![i].descricao}
                 </CommandItem>
               )}
             </Command>
           </PopoverContent>
         </Popover>
-        <Button><Search size={18} style={{ marginRight: 8 }} />  Pesquisar </Button>
+        <Button
+          className={styles.botaoPesquisar}
+          onClick={() => handlePesquisar()}>
+          <SearchIcon size={18} style={{ marginRight: 8 }} />
+          Pesquisar
+        </Button>
       </div>
 
-      <div >
-        <Table className={styles.tabela}>
-          <TableCaption className={styles.tableCaption}> {paginaAtiva} </TableCaption>
-          <TableHeader className={styles.tableHead}>
-            <TableRow className={styles.tableRow}>
-              <TableHead className={styles.colunaId}>Id</TableHead>
-              <TableHead className={styles.colunaNome}>Nome</TableHead>
-              <TableHead className={styles.colunaSetor}>Setor</TableHead>
-              <TableHead className={styles.colunaPermissao}>Permissão</TableHead>
-              <TableHead className={styles.colunaBotoes}>Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody className={styles.tableHead}>
-            {usuarios.map(usuario => (
-              <TableRow key={usuario.id} className={styles.tableRow}>
-                <TableCell className={styles.colunaId}>{usuario.id}</TableCell>
-                <TableCell className={styles.colunaNome}>{usuario.nome}</TableCell>
-                <TableCell className={styles.colunaSetor}>{usuario.setor}</TableCell>
-                <TableCell className={styles.colunaPermissao}>{usuario.permissao}</TableCell>
-                <TableCell className={styles.colunaBotoes} >
-                  <Link href={{ pathname: path.cadastroUsuario, query: usuario }} className={styles.botaoAlterar}><PencilIcon size={19} /></Link>
-                  <Button className={styles.botaoDeletar}><Trash2Icon size={19} /></Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      {lista && nomeTabela === "Usuarios" && <ListaUsuarios lista={lista} nomeTabela={nomeTabela} />}
+      {lista && nomeTabela === "Atividades" && <ListaAtividades lista={lista} nomeTabela={nomeTabela} />}
+
     </div>
   )
 }

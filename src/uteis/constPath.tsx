@@ -7,5 +7,6 @@ export const path = {
   consultaUsuarios: '/consulta',
   cadastroUsuario: '/formUsuario',
   cadastroSetor: '/cadastroSetor',
+  cadastroAtividade: '/formAtividade'
 }
 

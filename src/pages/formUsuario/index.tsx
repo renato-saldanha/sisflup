@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Command, CommandItem } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
-import { PermissaoProps, SetorProps } from "@/src/uteis/interfaces"
+import { PermissaoProps, SetorProps, UsuarioProps } from "@/src/uteis/interfaces"
 import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover"
 import { CommandEmpty, CommandInput } from "cmdk"
 import { Check, ChevronDownIcon, ChevronDownSquare, ChevronsUpDown } from "lucide-react"
@@ -15,83 +15,104 @@ import axios from "axios"
 import { config } from "@/src/uteis/config"
 import { UsuarioLogadoContext } from "@/src/contexts/usuario"
 
-const permissoes = [
-  {
-    id: 0,
-    nome: "Administrador",
-    descricao: "0 - Administrador"
-  },
-  {
-    id: 1,
-    nome: "Gestor",
-    descricao: "1 - Gestor"
-  },
-]
 
 export default function FormUsuario() {
-  const { paginaAtiva } = useContext(UsuarioLogadoContext)
-  const id = 0;
-  const [descricaoSetor, setDescricaoSetor] = useState("Selecione o setor")
-  const [descricaoPermissao, setDescricaoPermissao] = useState("Selecione a permissão")
-  const [nomeUsuario, setNomeUsuario] = useState("")
-  const [idPermissao, setIdPermissao] = useState(-1)
-  const [setor, setSetor] = useState<SetorProps>()
-  const [senha, setSenha] = useState("")
-  const [permissao, setPermissao] = useState<PermissaoProps>()
-  const [abrirSetor, setAbrirSetor] = useState(false)
-  const [abrirPermissao, setAbrirPermissao] = useState(false)
-  const [setoresDropdown, setSetoresDropdown] = useState<SetorProps[]>([]);
-  const ipServidor = config.server;
+  const { usuarioLogado } = useContext(UsuarioLogadoContext)
+  const history = useRouter()
+  const usuario: UsuarioProps = history.query.usuario ? JSON.parse(history.query.usuario.toString()) : {}
 
-  const setorSelecionado = {
+  const id = usuario ? usuario.id : -1;
+  const [nomeUsuario, setNomeUsuario] = useState(usuario ? usuario.nome : "")
+  const [senha, setSenha] = useState(usuario ? usuario.senha : "")
+  const [idSetorSelecionado, setIdSetorSelecionado] = useState(usuario ? usuario.id_setor : -1)
+  const [idPermissaoSelecionada, setIdPermissaoSelecionada] = useState(usuario ? usuario.id_permissao : -1)
+
+  const [setoresDropdown, setSetoresDropdown] = useState<SetorProps[]>([]);
+  const [permissoesDropdown, setPermissoesDropdown] = useState<PermissaoProps[]>([])
+  const [abrirSetor, setAbrirSetorDropdown] = useState(false)
+  const [abrirPermissao, setAbrirPermissaoDropdown] = useState(false)
+
+  const usuarioPersistencia = {
     id,
-    nomeUsuario,
+    nome: nomeUsuario,
     senha,
-    idPermissao
+    id_setor: idSetorSelecionado,
+    id_permissao: idPermissaoSelecionada,
   }
 
-  const tabela = paginaAtiva.normalize('NFD').replace(/[\u0300-\u036f]/g, "") //Remove acentos
-
+  function limparCampos() {
+    setNomeUsuario("")
+    setSenha("")
+    setIdSetorSelecionado(-1)
+    setIdPermissaoSelecionada(-1)
+  }
 
   useEffect(() => {
-    // if (setoresDropdown.length > 0) return
+    if (!usuarioLogado) {
+      history.push("/")
+    }
+
+    if (setoresDropdown.length > 0) return
     axios
-      .get(`${ipServidor}/setor/getListaSetores`)
-      .then(response => {
-        if (response.data && response.data.length > 0) {
-          const setoresComDescricao = response.data.map((setor: SetorProps) => {
+      .get(`${config.server}/setor/getListaSetores`)
+      .then(r => {
+        if (r.data && r.data.length > 0) {
+          const setoresComDescricao = r.data.map((setor: SetorProps) => {
             setor.descricao = `${setor.id} - ${setor.nome}`
             return setor
           })
-
           setSetoresDropdown(setoresComDescricao)
-
-
         }
       })
-      .catch(e => alert(`Ocorreu um erro ao gerar a lista de Setore: ${e.response.data.resposta}`))
+      .catch(e => alert(`Ocorreu um erro ao gerar a lista de Setores: ${e.response.data.resposta}`))
+
+    if (permissoesDropdown.length > 0) return
+    axios
+      .get(`${config.server}/permissao/getListaPermissoes`)
+      .then(r => {
+        if (r.data && r.data.length > 0) {
+          const permissoesComDescricao = r.data.map((permissao: PermissaoProps) => {
+            permissao.descricao = `${permissao.id} - ${permissao.nome}`
+            return permissao
+          })
+          setPermissoesDropdown(permissoesComDescricao)
+        }
+      })
+      .catch(e => alert(`Ocorreu um erro ao gerar a lista de Permissões: ${e.response.data.resposta}`))
   }, [!setoresDropdown])
 
   function handleSelectSetorDropdown(c: string) {
     const setorSelecionado: SetorProps | undefined = setoresDropdown.find(s => s.id === parseInt(c[0]))
     if (setorSelecionado) {
-      setDescricaoSetor(setorSelecionado.descricao)
-      setSetor(setorSelecionado)
+      setIdSetorSelecionado(setorSelecionado.id)
     }
-    setAbrirSetor(false)
+    setAbrirSetorDropdown(false)
   }
 
-  function handleSelectPermissao(c: string) {
-    const permissaoSelecionada: PermissaoProps | undefined = permissoes.find(s => s.id === parseInt(c[0]))
+  function handleSelectPermissaoDropdown(c: string) {
+    const permissaoSelecionada: PermissaoProps | undefined = permissoesDropdown.find(s => s.id === parseInt(c[0]))
     if (permissaoSelecionada) {
-      setDescricaoPermissao(permissaoSelecionada.descricao)
-      setPermissao(permissaoSelecionada)
+      setIdPermissaoSelecionada(permissaoSelecionada.id)
     }
-    setAbrirPermissao(false)
+    setAbrirPermissaoDropdown(false)
   }
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
+
+    axios
+      .put(`${config.server}/usuario/persistirUsuario`, usuarioPersistencia)
+      .then(r => {
+        if (r.data) {
+          alert(r.data.resposta)
+          usuarioPersistencia.id > 0 ? history.back() : limparCampos()
+        }
+      })
+      .catch(e => {
+        alert(e.response.data.resposta)
+        return
+      })
+
   }
 
   return (
@@ -110,11 +131,11 @@ export default function FormUsuario() {
           value={nomeUsuario}
           onChange={e => setNomeUsuario(e.target.value)} />
         <label>Setor</label>
-        <Popover open={abrirSetor} onOpenChange={setAbrirSetor}>
+        <Popover open={abrirSetor} onOpenChange={setAbrirSetorDropdown}>
           <PopoverTrigger asChild>
             <Button id={constsComponents.dropdown}>
-              {setoresDropdown.find(setor => setor.descricao === descricaoSetor)?.descricao
-                ? setoresDropdown.find(setor => setor.descricao === descricaoSetor)?.descricao
+              {setoresDropdown.find(setor => setor.id === idSetorSelecionado)?.descricao
+                ? setoresDropdown.find(setor => setor.id === idSetorSelecionado)?.descricao
                 : "Selecione o setor"}
               <ChevronDownIcon />
             </Button>
@@ -144,31 +165,31 @@ export default function FormUsuario() {
           onChange={e => setSenha(e.target.value)} />
 
         <label>Permissão</label>
-        <Popover open={abrirPermissao} onOpenChange={setAbrirPermissao}>
+        <Popover open={abrirPermissao} onOpenChange={setAbrirPermissaoDropdown}>
           <PopoverTrigger asChild>
             <Button id={constsComponents.dropdown}>
-              {permissoes.find(permissao => permissao.descricao === descricaoPermissao)?.descricao
-                ? permissoes.find(permissao => permissao.descricao === descricaoPermissao)?.descricao
+              {permissoesDropdown.find(permissao => permissao.id === idPermissaoSelecionada)?.descricao
+                ? permissoesDropdown.find(permissao => permissao.id === idPermissaoSelecionada)?.descricao
                 : "Selecione a permissão"}
               <ChevronDownIcon />
             </Button>
           </PopoverTrigger>
           <PopoverContent id={constsComponents.dropdownList}>
             <Command >
-              {permissoes.map((permissao, i) =>
+              {permissoesDropdown.map((permissao, i) =>
                 <CommandItem
                   key={permissao.id}
                   value={permissao.descricao}
-                  onSelect={handleSelectPermissao}
+                  onSelect={handleSelectPermissaoDropdown}
                 >
-                  {permissoes[i].descricao}
+                  {permissoesDropdown[i].descricao}
                 </CommandItem>
               )}
             </Command>
           </PopoverContent>
         </Popover>
         <div className={styles.botoes}>
-          <button>Salvar</button>
+          <button type="submit">Salvar</button>
         </div>
       </form >
 
