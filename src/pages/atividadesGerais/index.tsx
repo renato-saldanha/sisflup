@@ -1,25 +1,43 @@
-import { GetServerSideProps, GetStaticProps } from 'next';
-import styles from './styles.module.css'
-
-import { useContext, useEffect } from "react"
-import Head from 'next/head';
-import UsuarioLogadoProvider, { UsuarioLogadoContext } from '@/src/contexts/usuario';
-import { useRouter } from 'next/router';
-import { UsuarioProps } from '@/src/uteis/interfaces';
+import { useContext, useEffect, useState } from "react";
 import Link from 'next/link';
-import { path } from '../../uteis/constPath'
+import { useRouter } from 'next/router';
+import axios from 'axios';
+import { GetSessionParams, getSession, useSession } from 'next-auth/react';
+import Head from 'next/head';
+import { GetServerSideProps } from 'next';
+
+import styles from './styles.module.css';
+
+import { config } from '@/src/uteis/config';
 import { PERMISSAO_ADMIN } from '@/src/uteis/consts';
+import { MenuSetorProps, UsuarioProps } from '@/src/uteis/interfaces';
+import { path } from '../../uteis/constPath';
+import { constsComponents } from '@/src/uteis/constIdComponents';
+import { redirect } from "next/dist/server/api-utils";
+import { Session } from "next-auth";
 
+interface AtividadesGeraisProps {
+  session?: Session
+}
 
-export default function AtividadesGerais() {
-  const { usuarioLogado, setPaginaAtiva } = useContext(UsuarioLogadoContext)
-  const history = useRouter()  
+export default function AtividadesGerais({ session }: AtividadesGeraisProps) {
+  const usuarioLogado = session?.user
+  const [listaSetores, setListaSetores] = useState<MenuSetorProps[]>([])
 
   useEffect(() => {
-    if (!usuarioLogado) {
-      history.push("/")
-    }
-  }, [usuarioLogado])
+    axios
+      .get(`${config.server}/setor/getListaSetores`)
+      .then(r => {
+        if (r.data && r.data.length > 0) {
+          const listaComIdMenu = r.data.map((setor: MenuSetorProps) => {
+            setor.id_menu = setor.nome.replace(' ', '_').normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase() + "Button"
+            return setor
+          })
+          setListaSetores(listaComIdMenu)
+        }
+      })
+      .catch(e => alert(e.response.data.resposta))
+  }, [!listaSetores])
 
   return (
     <>
@@ -27,20 +45,33 @@ export default function AtividadesGerais() {
         <title> Atividades Gerais </title>
       </Head>
       <div className={styles.container}>
-        {usuarioLogado?.id_permissao === PERMISSAO_ADMIN && (
-          <div className={styles.consultas}>
-            <Link onClick={() => setPaginaAtiva("Usuarios")} href={path.consultaUsuarios}>Usuarios</Link>
-            <Link onClick={() => setPaginaAtiva("Atividades")} href={path.consultaAtividades}>Atividades</Link>
-          </div>
-        )}
-        <div className={styles.atividades}>
-          <Link style={{ backgroundColor: '#F6FA2E' }} href={path.atividadeEspecifica}>Vendas</Link>
-          <Link style={{ backgroundColor: '#73B8F9' }} href={path.atividadeEspecifica}>Medição</Link>
-          <Link style={{ backgroundColor: '#E9E9E2' }} href={path.atividadeEspecifica}>Prod. Serra</Link>
-          <Link style={{ backgroundColor: '#93938F' }} href={path.atividadeEspecifica}>Prod. Acabam.</Link>
-          <Link style={{ backgroundColor: '#FF9A23' }} href={path.atividadeEspecifica}>Entrega</Link>
-          <Link style={{ backgroundColor: '#1962F0' }} href={path.atividadeEspecifica}>Instalação</Link>
-          <Link style={{ backgroundColor: '#66D63E' }} href={path.atividadeEspecifica}>Pós-venda</Link>
+        <div className={styles.consultas}>
+          {usuarioLogado?.id_permissao === PERMISSAO_ADMIN && (
+            <Link
+              id={constsComponents.button}
+              href={{
+                pathname: path.consultaUsuarios,
+                query: { nomePagina: "Usuarios" }
+              }}>Usuarios</Link>
+          )}
+          <Link
+            id={constsComponents.button}
+            href={{
+              pathname: path.consultaAtividades,
+              query: { nomePagina: "Atividades" }
+            }}>Atividades</Link>
+        </div>
+
+        <div className={styles.setores}>
+          {listaSetores.map(setor => (
+            <Link
+              key={setor.id_menu}
+              id={setor.id_menu}
+              href={{
+                pathname: `${path.atividadeEspecifica}/${setor.id}`,
+                query: { setor: JSON.stringify(setor) }
+              }}>{setor.nome}</Link>
+          ))}
         </div>
 
       </div>
@@ -48,22 +79,21 @@ export default function AtividadesGerais() {
   )
 }
 
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const res = await fetch('http://localhost:4000/')
-//   return { props: { res } }
-// }
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context)
 
-// export const getStaticProps: GetStaticProps = async ({context}) => {
-//   let logado = await context.usu
-//   if (!context) {
-//     return {
-//       redirect : "/",
-//     }
-//   }
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: path.login,
+        permanent: false
+      }
+    }
+  }  
 
-//   return {
-//     props: {
-//       context: context
-//     }
-//   }
-// }
+  return {
+    props: {
+      session
+    },
+  }
+}

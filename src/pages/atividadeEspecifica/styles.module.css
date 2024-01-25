@@ -1,8 +1,9 @@
 .container {
-  background-color: var(--blue-100);
+  height: calc(100vh - 220px);
   padding: 20px;
   margin: 15px 40px;
   border-radius: 15px;
+  background-color: var(--blue-100);
 }
 
 .header {
@@ -21,28 +22,40 @@
 .itens {
   display: flex;
   flex-wrap: wrap;
-  max-height: calc(65vh - 4.6rem);
+  max-height: calc(75vh - 3.6rem);
   overflow-y: scroll;
 }
 
-.itens a {
+.itens button {
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 150px;
-  height: 75px;
-  background-color: var(--blue-400);
   margin: 10px;
   transition: all 0.2s;
   cursor: pointer;
-  text-align: center;
+
   border-radius: 10px;
+  border: 0;
 }
 
-.itens a:hover {
+.itens button:hover {
   transform: scale(1.05);
 }
 
-.detalhe {
+.itens p {
+  width: 100%;
   font-size: 17px;
+  text-align: center;
+}
+
+.detalheNome {
+  margin-top: 7px;
+  color: var(--gray-300);
+}
+
+.detalheEndereco {
+  color: var(--white);
+  text-decoration: underline;
+  margin: 5px 0 10px 0;
 }

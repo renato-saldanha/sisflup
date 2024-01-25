@@ -13,13 +13,20 @@ import { constsComponents } from "@/src/uteis/constIdComponents"
 import Head from "next/head"
 import axios from "axios"
 import { config } from "@/src/uteis/config"
-import { UsuarioLogadoContext } from "@/src/contexts/usuario"
+import { GetServerSideProps } from "next"
+import { getSession } from "next-auth/react"
+import { path } from "@/src/uteis/constPath"
+import { Session } from "next-auth"
 
+interface FormUsuarioProps {
+  session?: Session
+}
 
-export default function FormUsuario() {
-  const { usuarioLogado } = useContext(UsuarioLogadoContext)
+export default function FormUsuario({ session }: FormUsuarioProps) {
+  const usuarioLogado = session?.user
   const history = useRouter()
   const usuario: UsuarioProps = history.query.usuario ? JSON.parse(history.query.usuario.toString()) : {}
+  const server = config.server
 
   const id = usuario ? usuario.id : -1;
   const [nomeUsuario, setNomeUsuario] = useState(usuario ? usuario.nome : "")
@@ -48,13 +55,9 @@ export default function FormUsuario() {
   }
 
   useEffect(() => {
-    if (!usuarioLogado) {
-      history.push("/")
-    }
-
     if (setoresDropdown.length > 0) return
     axios
-      .get(`${config.server}/setor/getListaSetores`)
+      .get(`${server}/setor/getListaSetores`)
       .then(r => {
         if (r.data && r.data.length > 0) {
           const setoresComDescricao = r.data.map((setor: SetorProps) => {
@@ -68,7 +71,7 @@ export default function FormUsuario() {
 
     if (permissoesDropdown.length > 0) return
     axios
-      .get(`${config.server}/permissao/getListaPermissoes`)
+      .get(`${server}/permissao/getListaPermissoes`)
       .then(r => {
         if (r.data && r.data.length > 0) {
           const permissoesComDescricao = r.data.map((permissao: PermissaoProps) => {
@@ -97,11 +100,9 @@ export default function FormUsuario() {
     setAbrirPermissaoDropdown(false)
   }
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-
+  function handleClick() {
     axios
-      .put(`${config.server}/usuario/persistirUsuario`, usuarioPersistencia)
+      .post(`${server}/usuario/persistirUsuario`, usuarioPersistencia)
       .then(r => {
         if (r.data) {
           alert(r.data.resposta)
@@ -112,7 +113,10 @@ export default function FormUsuario() {
         alert(e.response.data.resposta)
         return
       })
+  }
 
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
   }
 
   return (
@@ -189,10 +193,32 @@ export default function FormUsuario() {
           </PopoverContent>
         </Popover>
         <div className={styles.botoes}>
-          <button type="submit">Salvar</button>
+          <button
+            id="button"
+            type="submit"
+            onClick={handleClick}>Salvar</button>
         </div>
       </form >
 
     </div >
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context)
+
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: path.login,
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {
+      session
+    },
+  }
 }

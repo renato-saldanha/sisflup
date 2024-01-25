@@ -1,37 +1,36 @@
-import React, { KeyboardEvent, createRef, useContext, useEffect, useRef, useState } from 'react'
 import axios from 'axios'
+import { GetServerSideProps } from 'next'
+import Head from 'next/head'
+import React, { KeyboardEvent, createRef, useEffect, useState } from 'react'
+
+import { getCsrfToken, getSession, signIn, signOut } from 'next-auth/react'
 
 import styles from '../styles/home.module.css'
-import stylesComponetes from '../styles/stylesComponentes.module.css'
 
-import { path } from '../uteis/constPath'
-import { UsuarioProps } from '../uteis/interfaces'
-import Head from 'next/head'
-import Link from 'next/link'
-import UsuarioLogadoProvider, { UsuarioLogadoContext } from '../contexts/usuario'
 import { config } from '../uteis/config'
+import { constsComponents } from '../uteis/constIdComponents'
+import { UsuarioProps } from '../uteis/interfaces'
+import { path } from '../uteis/constPath'
 
-export default function Home() {
+interface HomeProps {
+  csrfToken: string | undefined
+}
+
+export default function Home({ csrfToken }: HomeProps) {
   const [id, setId] = useState<number | string>()
   const [nome, setNome] = useState<string>("")
   const [senha, setSenha] = useState<string>("")
   const [usuarioIdentificacao, setUsuarioIdentificacao] = useState<UsuarioProps | null>(null)
   const [listaUsuariosSistema, setListaUsuariosSistema] = useState<UsuarioProps[]>([])
 
-  const setUsuarioLogado = useContext(UsuarioLogadoContext).setUsuarioLogado
-
   const inputSenha = createRef<HTMLInputElement>();
-  const buttonEntrar = createRef<HTMLAnchorElement>();
-
-  function entrar() {
-    buttonEntrar?.current?.click()
-  }
 
   function focus() {
     inputSenha?.current?.select();
   }
 
   useEffect(() => {
+
     axios
       .get(`${config.server}/usuario/getListaUsuarios`)
       .then(r => {
@@ -47,27 +46,6 @@ export default function Home() {
         alert("Informe a senha")
         e.preventDefault()
         return
-      }
-
-      const usuario = listaUsuariosSistema.filter(u => u.id === usuarioIdentificacao?.id)[0]
-      if (usuario) {
-        axios
-          .get(`${config.server}/login/${id}&${senha}`)
-          .then(r => {
-            if (r.data) {
-              let usuarioRecebido: UsuarioProps = r.data.usu
-              setUsuarioLogado(usuarioRecebido)
-              entrar()
-            }
-          })
-          .catch(error => {
-            alert(error.response.data.resposta)
-            focus()
-            e.preventDefault()
-          })
-      } else {
-        alert('Preencha com um Usuário')
-        e.preventDefault()
       }
     }
   }
@@ -102,45 +80,63 @@ export default function Home() {
       <Head>
         <title> Login </title>
       </Head>
-      <UsuarioLogadoProvider>
-        <>
-          <form className={styles.form}>
-            <label >Identificação</label>
-            <div className={styles.identificacao}>
-              <input
-                autoFocus
-                type="text"
-                id='id'
-                name='id'
-                value={id}
-                onKeyDown={handleProcurarUsuario}
-                onChange={e => setId(parseInt(e.target.value))} />
-              <input
-                readOnly={true}
-                type='text'
-                id='nome'
-                name='nome'
-                value={nome}
-                onChange={e => setNome(e.target.value)} />
-            </div>
-            <label >Senha</label>
+      <>
+        <form className={styles.form} method='post' action="api/auth/callback/credentials">
+          <input name="csrfToken" type='hidden' defaultValue={csrfToken} />
+          <label >Identificação</label>
+          <div className={styles.identificacao}>
             <input
-              type='password'
-              id='senha'
-              name='senha'
-              value={senha}
-              ref={inputSenha}
-              onChange={e => setSenha(e.target.value)}
-              onKeyDown={handleEntrar} />
-
-            <Link
-              ref={buttonEntrar}
-              href={path.atividadesGerais}
-            > Entrar </Link>
-          </form>
-        </>
-      </UsuarioLogadoProvider>
+              autoFocus
+              type="text"
+              id='id'
+              name='id'
+              value={id}
+              onKeyDown={handleProcurarUsuario}
+              onChange={e => setId(!e.target.value ? 0 : parseInt(e.target.value))} />
+            <input
+              readOnly={true}
+              type='text'
+              id='nome'
+              name='nome'
+              value={nome}
+              onChange={e => setNome(e.target.value)} />
+          </div>
+          <label >Senha</label>
+          <input
+            type='password'
+            id='senha'
+            name='senha'
+            value={senha}
+            ref={inputSenha}
+            onChange={e => setSenha(e.target.value)}
+            onKeyDown={handleEntrar} />
+          <button
+            id={constsComponents.button}
+            type='submit'
+            onClick={() => handleEntrar}
+          > Entrar </button>
+        </form>
+      </>
     </div>
-
   )
+}
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context)
+
+  if (session?.user) {
+    return {
+      redirect: {
+        destination: path.atividadesGerais,
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {
+      csrfToken: await getCsrfToken(context)
+    }
+  }
 }

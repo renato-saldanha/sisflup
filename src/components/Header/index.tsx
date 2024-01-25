@@ -6,6 +6,9 @@ import { useRouter } from "next/router";
 import { AppProps } from "next/app";
 import { usePathname } from "next/navigation";
 import { path } from "@/src/uteis/constPath";
+import { constsComponents } from "@/src/uteis/constIdComponents";
+import BotaoSignOut from "../BotaoSignOut";
+import { signOut } from "next-auth/react";
 
 export default function Header() {
   const history = useRouter()
@@ -16,11 +19,17 @@ export default function Header() {
       <Head>
         <title>Sisflup - Sistema de fluxo de produção</title>
       </Head>
+      <div className={styles.containerBotao}>
+      {(pathName !== path.login) && <button
+          id="button"
+          className={styles.botaoSignOut}
+          onClick={() => signOut()}>Sair</button>}
+      </div>
       <h1 className={styles.titulo}>
         Sisflup - Sistema de fluxo de produção
       </h1>
       <div >
-        {(pathName !== path.login && pathName !== path.atividadesGerais) && <Button onClick={() => history.back()}>Voltar</Button>}
+        {(pathName !== path.login && pathName !== path.atividadesGerais) && <Button id={constsComponents.button} onClick={() => history.back()}>Voltar</Button>}
       </div>
     </div >
   )

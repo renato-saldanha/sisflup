@@ -7,7 +7,6 @@ import { ChevronDownIcon, PencilIcon, SearchIcon, Trash2Icon } from "lucide-reac
 import Link from "next/link"
 import { createRef, useContext, useEffect, useState } from "react"
 
-import { UsuarioLogadoContext } from "@/src/contexts/usuario"
 import { config } from "@/src/uteis/config"
 import { constsComponents } from "@/src/uteis/constIdComponents"
 import { AtividadePesquisaProps, UsuarioPesquisaProps } from "@/src/uteis/interfaces"
@@ -17,6 +16,9 @@ import { useRouter } from "next/router"
 import styles from './styles.module.css'
 import ListaUsuarios from "@/src/components/ListaUsuarios"
 import ListaAtividades from "@/src/components/ListaAtividades"
+import { GetServerSideProps } from "next"
+import { getSession } from "next-auth/react"
+import { Session } from "next-auth"
 
 
 interface FiltroProps {
@@ -24,21 +26,26 @@ interface FiltroProps {
   filtro: string
 }
 
-export default function Consulta() {
-  const { paginaAtiva, usuarioLogado } = useContext(UsuarioLogadoContext)
+interface ConsultaProps {
+  session?: Session
+}
 
-  const [lista, setLista] = useState<UsuarioPesquisaProps[] & AtividadePesquisaProps[]>()
+export default function Consulta({ session }: ConsultaProps) {
+  const history = useRouter()
 
-  const nomeTabela = paginaAtiva.normalize('NFD').replace(/[\u0300-\u036f]/g, "") //Remove acentos
+  const paginaAtiva = history.query.nomePagina ? history.query.nomePagina : ""
+
+  const [lista, setLista] = useState<UsuarioPesquisaProps[] | AtividadePesquisaProps[]>()
+
+  const nomeTabela = paginaAtiva.toString()
 
   const [descricao, setDescricao] = useState("")
   const [abrirSetor, setAbrirSetor] = useState(false)
   const [filtroSelecionado, setFiltroSelecionado] = useState<FiltroProps>()
 
-  const paginaAtivaSingular = paginaAtiva.substring(0, paginaAtiva.length - 1)
-  const pathTipoLista = paginaAtiva.substring(0, paginaAtiva.length - 1).toLowerCase()
+  const paginaAtivaSingular = String(paginaAtiva).substring(0, paginaAtiva.length - 1)
+  const pathTipoLista = String(paginaAtiva).substring(0, paginaAtiva.length - 1).toLowerCase()
 
-  const history = useRouter()
   const inputDescricao = createRef<HTMLInputElement>()
 
   const filtrosDropdown = () => {
@@ -52,7 +59,7 @@ export default function Consulta() {
         return [
           { descricao: "Cliente", filtro: "usuarios.nome" },
           { descricao: "Setor", filtro: "setor.nome" },
-          { descricao: "Responsavel", filtro: "responsavel" },// fazer regra no backend para buscar todos os responsaveis
+          { descricao: "Responsavel", filtro: "responsavel" },
           { descricao: "Arquiteto", filtro: "atividades.nome_arquiteto" }
         ]
     }
@@ -60,9 +67,9 @@ export default function Consulta() {
 
 
   useEffect(() => {
-    if (!usuarioLogado) history.push("/")
 
-  }, [usuarioLogado])
+
+  }, [])
 
 
   function handleSelectFiltro(c: string) {
@@ -94,7 +101,13 @@ export default function Consulta() {
         <title>Consulta de {paginaAtiva}</title>
       </Head>
       <div className={styles.botoesHeader}>
-        <Link id={constsComponents.button} href={"form" + paginaAtivaSingular}>+ {paginaAtivaSingular}</Link>
+        <Link id={constsComponents.button}
+          href={{
+            pathname: "form" + paginaAtivaSingular,
+            query: { isCadastro: true }
+          }}>
+          + {paginaAtivaSingular}
+        </Link>
       </div>
       <div className={styles.camposPesquisa} >
         <label>Descrição</label>
@@ -131,6 +144,7 @@ export default function Consulta() {
           </PopoverContent>
         </Popover>
         <Button
+          id={constsComponents.button}
           className={styles.botaoPesquisar}
           onClick={() => handlePesquisar()}>
           <SearchIcon size={18} style={{ marginRight: 8 }} />
@@ -138,9 +152,28 @@ export default function Consulta() {
         </Button>
       </div>
 
-      {lista && nomeTabela === "Usuarios" && <ListaUsuarios lista={lista} nomeTabela={nomeTabela} />}
-      {lista && nomeTabela === "Atividades" && <ListaAtividades lista={lista} nomeTabela={nomeTabela} />}
+      {lista && nomeTabela === "Usuarios" && <ListaUsuarios session={session} lista={lista as UsuarioPesquisaProps[]} nomeTabela={nomeTabela} setLista={setLista} />}
+      {lista && nomeTabela === "Atividades" && <ListaAtividades session={session} lista={lista as AtividadePesquisaProps[]} nomeTabela={nomeTabela} setLista={setLista} />}
 
     </div>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context)
+
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: path.login,
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {
+      session
+    },
+  }
 }

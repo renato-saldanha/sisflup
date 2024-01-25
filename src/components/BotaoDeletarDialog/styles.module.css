@@ -1,0 +1,25 @@
+.container {
+background: transparent;  
+border: 0;
+}
+
+.dialogContent {
+  color: var(--white);
+  margin: calc(10vh - 220px) calc(50vw - 280px);
+  padding: 15px 0;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--blue-100);
+  opacity: 0.9;
+  border-radius: 14px;
+}
+
+.dialogContentButtons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.dialogButton {
+  width: 150px;
+}

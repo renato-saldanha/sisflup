@@ -1,30 +1,44 @@
 import { useContext, useEffect } from 'react'
 import FormAtividade from '../formAtividade'
 import styles from './styles.module.css'
-import UsuarioLogadoProvider, { UsuarioLogadoContext } from '@/src/contexts/usuario'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { getSession } from 'next-auth/react'
+import { GetServerSideProps } from 'next'
+import { path } from '@/src/uteis/constPath'
+import { Session } from 'next-auth'
 
 interface AtividadeEspecificaDetalhadaProps {
-  mostrarBtnConcluir: boolean,
-  mostrarBtnSalvar: boolean
+  session: Session
 }
 
-export default function AtividadeEspecificaDetalhada() {
-  const { usuarioLogado } = useContext(UsuarioLogadoContext)
-  const history = useRouter()
-
-  useEffect(() => {
-    if (!usuarioLogado) history.push("/")
-  }, [usuarioLogado])
-
+export default function AtividadeEspecificaDetalhada({ session }: AtividadeEspecificaDetalhadaProps) {
   return (
     <div className={styles.container}>
       <Head>
         <title>Atividade</title>
-      </Head>      
-      <FormAtividade />
+      </Head>
+      <FormAtividade session={session} />
     </div>
 
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context)
+
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: path.login,
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {
+      session
+    },
+  }
 }

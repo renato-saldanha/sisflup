@@ -1,7 +1,7 @@
 .container {
   width: 100%;
   display: grid;
-  margin-top: 50px;
+  margin-top: 10px;  
   margin-bottom: 7px;
 }
 
@@ -10,6 +10,7 @@
 }
 
 .titulo {
+  margin-top: 50px;
   color: var(--white);
   border: 2px solid;
   border-radius: 4px;
@@ -19,4 +20,16 @@
   margin: 0 25%;
   display: grid;
   text-align: center;
+}
+
+.containerBotao {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  
+}
+
+.botaoSignOut {
+  margin-right: 25px;
 }

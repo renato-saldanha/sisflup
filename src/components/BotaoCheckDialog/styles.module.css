@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px 0 ;
+  padding-bottom: -10px;
+  padding-right: 7px;
+  width: 100%;
+}
+
+.dialogContent {
+  color: var(--white);
+  margin: calc(5vh - 520px) calc(50vw - 280px);
+  padding: 15px 0;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--blue-200);
+  opacity: 0.9;
+  border-radius: 14px;
+}
+
+.dialogContentButtons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.dialogButton {
+  width: 150px;
+}

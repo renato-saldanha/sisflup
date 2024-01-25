@@ -11,16 +11,16 @@
   margin-left: 25px;
 }
 
-.atividades {
+.setores {
   display: flex;
   align-items: center;
   justify-content: center;
   padding-top: 13px;
 }
 
-.atividades a {
+.setores a {
   text-align: center;
-  width: 12.4%;
+  width: 12.81%;
   height: calc(100vh - 300px);
   margin: 0 .6%; 
   word-wrap: break-word;

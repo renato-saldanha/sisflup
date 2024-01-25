@@ -46,17 +46,18 @@ label {
 }
 
 button,
-a ,
+a,
 input {
   font-weight: bold;
 }
 
 input,
-button[id=dropdown] {
+button[id="dropdown"] {
   background-color: var(--blue-100);
   color: var(--white);
   padding: 7px 10px;
   border: 0;
+  display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
   border-radius: 9px;
@@ -64,11 +65,17 @@ button[id=dropdown] {
   border: 0;
 }
 
-[id=dropdownList] {
+input::placeholder {
+  font-size: 20px;
+  font-weight: normal;
+  color: var(--gray-300);
+}
+
+[id="dropdownList"] {
   background-color: var(--blue-100);
   opacity: 0.9;
   color: var(--white);
-  width: auto;  
+  width: auto;
   font-size: 22px;
   cursor: pointer;
   border-radius: 8px;
@@ -78,14 +85,7 @@ button[id=dropdown] {
   text-align: left;
 }
 
-input::placeholder {
-  font-size: 20px;
-  font-weight: normal;
-  color: var(--gray-300);
-}
-
-button,
-a {
+[id="button"] {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,11 +97,161 @@ a {
   background-color: var(--orange-300);
   transition: all 0.2s;
   padding: 7px 17px;
-  font-size: 23px;  
+  font-size: 23px;
 }
 
-button:hover,
-a:hover {
-  background-color: var(--orange-100);
+[id="button"]:hover {
   transform: scale(1.06);
+  opacity: 0.8;
+}
+
+[id="vendasButton"] {
+  background-color: #dadd11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white);
+  transition: all 0.2s;
+  padding: 7px 17px;
+  font-size: 23px;
+}
+
+[id="vendasButtonMenu"] {
+  background-color: #8b8d10;
+}
+
+[id="medicaoButton"] {
+  background-color: #73b8f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white);
+  transition: all 0.2s;
+  padding: 7px 17px;
+  font-size: 23px;
+}
+
+[id="medicaoButtonMenu"] {
+  background-color: #5e93c5;
+}
+
+[id="producao_serraButton"] {
+  background-color: #cacaca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white);
+  transition: all 0.2s;
+  padding: 7px 17px;
+  font-size: 23px;
+}
+
+[id="producao_serraButtonMenu"] {
+  background-color: #9f9f9f;
+}
+
+[id="producao_acabamentoButton"] {
+  background-color: #93938f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white);
+  transition: all 0.2s;
+  padding: 7px 17px;
+  font-size: 23px;
+}
+
+[id="producao_acabamentoButtonMenu"] {
+  background-color: #72726d;
+}
+
+[id="entregaButton"] {
+  background-color: #ff9a23;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white);
+  transition: all 0.2s;
+  padding: 7px 17px;
+  font-size: 23px;
+}
+
+[id="entregaButtonMenu"] {
+  background-color: #c57518;
+}
+
+[id="instalacaoButton"] {
+  background-color: #1962f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white);
+  transition: all 0.2s;
+  padding: 7px 17px;
+  font-size: 23px;
+}
+
+[id="instalacaoButtonMenu"] {
+  background-color: #164ebf;
+}
+
+[id="pos_vendaButton"] {
+  background-color: #66d63e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--white);
+  transition: all 0.2s;
+  padding: 7px 17px;
+  font-size: 23px;
+}
+
+[id="pos_vendaButtonMenu"] {
+  background-color: #4fa430;
+}
+
+[id="botao_deletar"] {
+  color: var(--red-400);
+  cursor: pointer;
+}
+
+[id="botao_deletar"]:hover {
+  transform: scale(1.1);
+}
+
+[id="checkbox"] {
+  background-color: transparent;
+
+ flex: 1;
+  display: flex;
+align-items: center;
+  /* justify-content: flex-end; */
 }

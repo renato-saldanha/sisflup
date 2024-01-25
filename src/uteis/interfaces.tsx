@@ -3,7 +3,7 @@ export interface UsuarioProps {
   nome: string
   senha: string
   id_permissao: number | null
-  id_setor: number | null
+  id_setor: number
 }
 
 export interface AtividadeProps {
@@ -11,20 +11,28 @@ export interface AtividadeProps {
   nome_cliente: string
   endereco_cliente: string
   nome_arquiteto: string
-  data_entrega: Date | null
+  data_entrega: string
   responsavel_vendas: string
   responsavel_medicao: string
   responsavel_producao_serra: string
   responsavel_producao_acabamento: string
   responsavel_entrega: string
   responsavel_instalacao: string
-  observacao: string
+  observacoes: string
+  id_setor?: number
+  responsavel_atual?: string | undefined
 }
 
 export interface SetorProps {
   id: number
   nome: string
   descricao: string
+}
+
+export interface MenuSetorProps {
+  id: number
+  nome: string
+  id_menu: string
 }
 
 export interface PermissaoProps {
@@ -43,9 +51,15 @@ export interface UsuarioPesquisaProps {
 
 export interface AtividadePesquisaProps {
   id: number
-  cliente: string
-  endereco: string
+  nome_cliente: string
+  endereco_cliente: string
   responsavel: string
-  data_entrega: Date
+  data_entrega: string
   setor_atual: string
+}
+
+export interface ListaProps<T> {
+  lista: T[]
+  nomeTabela: string
+  setLista: (lista: T[]) => void
 }
