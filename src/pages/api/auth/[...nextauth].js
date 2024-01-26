@@ -5,6 +5,7 @@ import { path } from "../../../uteis/constPath";
 import NextAuth from "next-auth/next";
 
 export default NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       // O nome a ser exibido no formulário de login (por exemplo, "Entrar com...")
@@ -17,17 +18,22 @@ export default NextAuth({
       // credentials: {},
       async authorize(credentials, req) {
         // Adicione lógica aqui para procurar o usuário a partir das credenciais fornecidas
-        const res = await fetch(`${config.server}/login`, {
+        const res = await fetch('http://localhost:4000/login', {
           method: "POST",
           body: JSON.stringify(credentials),
           headers: { "Content-Type": "application/json" },
         });
-        const usuarioData = await res.json();
+        
+        try {
+          const usuarioData = await res.json();
 
-        if (res.status === 200) {
-          // console.log("Dados:", usuarioData.usuario)
-          const user = usuarioData.usuario;
-          return user;
+          if (res.status === 200) {
+            // console.log("Dados:", usuarioData.usuario)
+            const user = usuarioData.usuario;
+            return user;
+          }
+        } catch (error) {
+          return null;
         }
 
         return null;
@@ -54,7 +60,7 @@ export default NextAuth({
       const newSession = {
         ...session,
         user: token.user,
-        accessToken: token.accessToken
+        accessToken: token.accessToken,
       };
       // console.log("newSession:", newSession);
       return newSession;
@@ -69,7 +75,7 @@ export default NextAuth({
     strategy: "jwt",
   },
   // jwt: {
-  //   secret: "123123"
-  //   // secret: process.env.JWT_SECRET
+  //   // secret: "123123"
+  //   secret: process.env.JWT_SECRET
   // }
 });

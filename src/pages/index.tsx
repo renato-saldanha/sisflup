@@ -44,7 +44,6 @@ export default function Home({ csrfToken }: HomeProps) {
     if (e.key === 'Enter') {
       if (senha === "") {
         alert("Informe a senha")
-        e.preventDefault()
         return
       }
     }
