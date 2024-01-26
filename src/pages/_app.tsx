@@ -11,10 +11,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <SessionProvider session={pageProps.session}>
-        {/* <QueryClientProvider client={queryClient}> */}
+        <QueryClientProvider client={queryClient}>
           <Header />
           <Component {...pageProps} />
-        {/* </QueryClientProvider> */}
+        </QueryClientProvider>
       </SessionProvider>
     </>
   )
