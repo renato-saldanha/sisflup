@@ -30,25 +30,3 @@
 .botaoPesquisar {
   flex: 1;
 }
-
-.tabela {
-  justify-content: left;
-  margin-top: 20px;
-  margin: 20px calc(15vw + 100px) 0 0;
-  color: var(--white);
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.tableCaption {
-  font-size: 27px;
-  margin-bottom: 10px;
-}
-
-
-.tableRow {
-  text-align: left;
-  font-size: 20px;
-  display: table;
-  width: 100%;
-}

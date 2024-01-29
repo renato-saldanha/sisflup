@@ -18,7 +18,7 @@ export default NextAuth({
       // credentials: {},
       async authorize(credentials, req) {
         // Adicione lógica aqui para procurar o usuário a partir das credenciais fornecidas
-        const res = await fetch('http://localhost:4000/login', {
+        const res = await fetch(`${config.server}/login`, {
           method: "POST",
           body: JSON.stringify(credentials),
           headers: { "Content-Type": "application/json" },

@@ -1,3 +1,4 @@
 export const config = {
-  server: "http://localhost:4000"
+  server: "http://192.168.2.75:4000",
+  app: "http://192.168.2.75:3000",
 }

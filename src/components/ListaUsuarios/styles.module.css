@@ -1,19 +1,17 @@
-
-
 .tabela {
   justify-content: left;
   margin-top: 20px;
   margin: 20px calc(15vw + 100px) 0 0;
   color: var(--white);
   border-collapse: collapse;
-  width: 100%;
+  width: 80%;  
+  flex-direction: column;
 }
 
 .tableRow {
   text-align: left;
-  width: 100%;
+  display: flex;
 }
-
 
 .colunaId,
 .colunaNome,
@@ -29,11 +27,12 @@
   width: 45px;
   text-align: center;
   padding: 0;
-  flex:3
+  flex: .1
 }
 
 .colunaNome {
   width: 350px;
+  max-width: 400px;
 }
 .colunaSetor {
   width: 190px;
@@ -46,7 +45,8 @@
 .colunaBotoes {
   display: flex;
   width: 120px;
-  justify-content: space-evenly;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .colunaBotoes button,

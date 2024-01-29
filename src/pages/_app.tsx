@@ -14,6 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <SessionProvider session={pageProps.session}>
           <Header />
           <Component {...pageProps} />
+          <strong style={{ color: 'white', position:"absolute", bottom:"0%", width: '100%', padding:"8px", textAlign:"right"}}>
+            RS Soluções Tecnológicas. Email: ranalisesaldanha@gmail.com - Telefone: (65) 9 9271-2774
+          </strong>
         </SessionProvider>
       </QueryClientProvider>
     </>
