@@ -32,25 +32,25 @@
 }
 
 .colunaId {
-  width: 6.2%;
+  flex: 0.5;
   text-align: center;
   padding: 0;
 }
 
 .colunaNome {
-  width: 40%;
+  flex: 2;
 }
 .colunaSetor {
-  width: 25%;
+  flex: 1;
 }
 
 .colunaPermissao {
-  width: 19%;
+  flex: 0.9;
 }
 
 .colunaBotoes {
   display: flex;
-  width: 11%;
+  flex: 0.6;
   align-items: center;
   justify-content: space-around;
 }

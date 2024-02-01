@@ -60,8 +60,8 @@ export default function ListaAtividades({ session, lista, nomeTabela, setLista }
               <TableCell className={styles.colunaEndereco}>{item.logradouro}, {item.nome_bairro}</TableCell>
             <TableCell className={styles.colunaResponsavel}>{item.responsavel_atual}</TableCell>
             <TableCell className={styles.colunaDataEntrega}>{getDataLocal(item.data_entrega)}</TableCell>
-            {usuarioLogado?.id_permissao === PERMISSAO_ADMIN && (
               <TableCell className={styles.colunaBotoes}>
+            {usuarioLogado?.id_permissao === PERMISSAO_ADMIN && (
                 <Link
                   href={{
                     pathname: path.cadastroAtividade,
@@ -69,14 +69,14 @@ export default function ListaAtividades({ session, lista, nomeTabela, setLista }
                   }}
                   className={styles.botaoAlterar}>
                   <PencilIcon size={19} />
-                </Link>
-
+                </Link>)}
+                {usuarioLogado?.id_permissao === PERMISSAO_ADMIN && (
                 <BotaoDeletarDialog
                   id={item.id}
                   children={<Trash2Icon id={constsComponents.botaoDeletar} size={19} />}
                   handleEvento={handleDeletarAtividade}
-                  titulo="Deseja realmente deletar esse registro?" />
-              </TableCell>)}
+                  titulo="Deseja realmente deletar esse registro?" />)}
+                  </TableCell>
           </TableRow>
         ))}
       </TableBody>

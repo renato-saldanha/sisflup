@@ -35,21 +35,13 @@
   }
 }
 
-
 .camposPesquisa input {
-  /* margin: 0 5px; */
-  width: 100%;
-}
-
-.camposPesquisa button,
-.camposPesquisa input {
-  /* margin: 0 10px; */
+    width: 100%;
 }
 
 .camposPesquisa label {
   margin-right: 8px;
 }
-
 
 .camposPesquisa input {
   margin-right: 8px;  

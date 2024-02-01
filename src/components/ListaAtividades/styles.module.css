@@ -32,30 +32,30 @@
 }
 
 .colunaId {
-  width: 6.2%;
+  flex: 0.5;
   text-align: center;
   padding: 0;
 }
 
 .colunaCliente {
-  width: 30%;
+  flex: 2;
 }
 .colunaEndereco {
-  width: 37%;
+  flex: 3;
 }
 
 .colunaResponsavel {
-  width: 18%;
+  flex: 1;
 }
 
 .colunaDataEntrega {
   text-align: center;
-  width: 18%;
+  flex: 1;
 }
 
 .colunaBotoes {
   display: flex;
-  width: 16%;
+  flex: 1;
   align-items: center;
   justify-content: space-around;
 }
