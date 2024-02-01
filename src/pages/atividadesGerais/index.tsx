@@ -59,7 +59,7 @@ export default function AtividadesGerais({ session }: AtividadesGeraisProps) {
             href={{
               pathname: path.consultaAtividades,
               query: { nomePagina: "Atividades" }
-            }}>Atividades</Link>
+            }}>Atividades</Link>          
         </div>
 
         <div className={styles.setores}>
@@ -69,7 +69,7 @@ export default function AtividadesGerais({ session }: AtividadesGeraisProps) {
               id={setor.id_menu}
               href={{
                 pathname: `${path.atividadeEspecifica}/${setor.id}`,
-                query: { setor: JSON.stringify(setor) }
+                query: { setor: JSON.stringify(setor), usuarioLogado: JSON.stringify(usuarioLogado) }
               }}>{setor.nome}</Link>
           ))}
         </div>
@@ -89,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         permanent: false
       }
     }
-  }  
+  }
 
   return {
     props: {

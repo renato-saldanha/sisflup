@@ -1,10 +1,9 @@
 .tabela {
   justify-content: left;
-  margin-top: 20px;
-  margin: 20px calc(15vw + 100px) 0 0;
+  margin-top: 10px;
   color: var(--white);
   border-collapse: collapse;
-  width: 80%;  
+  width: 100%;
   flex-direction: column;
 }
 
@@ -20,48 +19,43 @@
 .colunaDataEntrega,
 .colunaBotoes {
   border: 1px solid;
-  padding: 0 15px 0 5px;
   font-size: 16px;
-}
-
-.colunaId {
-  width: 45px;
-  text-align: center;
-  padding: 0;
-  flex: .4
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .colunaCliente,
-.colunaEndereco {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;  
+.colunaEndereco,
+.colunaResponsavel {
+  padding: 0 15px 0 5px;
+}
+
+.colunaId {
+  width: 6.2%;
+  text-align: center;
+  padding: 0;
 }
 
 .colunaCliente {
-  width: 350px;
-  max-width: 400px;  
-  word-wrap: break-word;
-  
+  width: 30%;
 }
 .colunaEndereco {
-  width: 390px;
-  max-width: 400px;  
-  word-wrap: break-word;
+  width: 37%;
 }
 
 .colunaResponsavel {
-  width: 150px;
+  width: 18%;
 }
 
 .colunaDataEntrega {
   text-align: center;
-  width: 150px;    
+  width: 18%;
 }
 
 .colunaBotoes {
   display: flex;
-  width: 120px;
+  width: 16%;
   align-items: center;
   justify-content: space-around;
 }
@@ -72,7 +66,6 @@
   transition: all 0.2s;
   border-radius: 6px;
   margin: 2px 0 2px 0;
-  
 }
 
 .botaoAlterar {

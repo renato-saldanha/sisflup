@@ -22,12 +22,13 @@
 
   font-family: "Roboto", sans-serif;
 
-  width: 100%;
-  max-width: 1680;
+  max-width: 1680px;
   height: calc(100vh - 42px);
-  display: flex;
-  flex-direction: column;
   background-color: var(--blue-300);
+}
+
+#__next {
+  width: 100%;
 }
 
 * {
@@ -59,7 +60,6 @@ button[id="dropdown"] {
   border: 0;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
   border-radius: 9px;
   font-size: 1.4rem;
   border: 0;
@@ -89,7 +89,6 @@ input::placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
   border: 0;
   border-radius: 8px;
   cursor: pointer;
@@ -250,8 +249,8 @@ input::placeholder {
 [id="checkbox"] {
   background-color: transparent;
 
- flex: 1;
+  flex: 1;
   display: flex;
-align-items: center;
+  align-items: center;
   /* justify-content: flex-end; */
 }

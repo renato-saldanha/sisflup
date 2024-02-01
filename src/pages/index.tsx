@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { GetServerSideProps } from 'next'
 import Head from 'next/head'
-import React, { KeyboardEvent, createRef, useEffect, useState } from 'react'
+import React, { FocusEvent, KeyboardEvent, createRef, useEffect, useState } from 'react'
 
 import { getCsrfToken, getSession, signIn, signOut } from 'next-auth/react'
 
@@ -11,6 +11,7 @@ import { config } from '../uteis/config'
 import { constsComponents } from '../uteis/constIdComponents'
 import { UsuarioProps } from '../uteis/interfaces'
 import { path } from '../uteis/constPath'
+import { useRouter } from 'next/router'
 
 interface HomeProps {
   csrfToken: string | undefined
@@ -20,13 +21,12 @@ export default function Home({ csrfToken }: HomeProps) {
   const [id, setId] = useState<number | string>()
   const [nome, setNome] = useState<string>("")
   const [senha, setSenha] = useState<string>("")
-  const [usuarioIdentificacao, setUsuarioIdentificacao] = useState<UsuarioProps | null>(null)
   const [listaUsuariosSistema, setListaUsuariosSistema] = useState<UsuarioProps[]>([])
-
-  const inputSenha = createRef<HTMLInputElement>();
+  const history = useRouter()
+  const inputSenha = createRef<HTMLInputElement>()
 
   function focus() {
-    inputSenha?.current?.select();
+    inputSenha?.current?.select()
   }
 
   useEffect(() => {
@@ -40,20 +40,55 @@ export default function Home({ csrfToken }: HomeProps) {
       })
   }, [!listaUsuariosSistema])
 
-  function handleEntrar(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter') {
+  function handleEntrarKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
       if (senha === "") {
         alert("Informe a senha")
         return
       }
+      handleEntrarClick()
     }
   }
 
-  function handleProcurarUsuario(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter') {
+  async function handleEntrarClick() {
+    try {
+      const res = await signIn('credentials', {
+        credential: { csrfToken },
+        id: id,
+        senha: senha,
+        redirect: false
+      })
+
+      if (res?.status === 200) history.push(path.atividadesGerais)
+      else if (res?.status === 401) {
+        alert("Senha não Confere")
+        return
+      }
+      // method='post' action="api/auth/callback/credentials"
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  function handleProcurarUsuarioExit(e: KeyboardEvent<HTMLInputElement> & FocusEvent<HTMLInputElement>) {
+    if (e.currentTarget.name === "id" && e.currentTarget.value !== '0') {
       const usuario = listaUsuariosSistema.filter(u => u.id === id)[0]
       if (usuario) {
-        setUsuarioIdentificacao(usuario)
+        setNome(usuario.nome)
+        focus();
+      } else {
+        alert('Usuário não encontrado')
+        setNome('')
+        setId(0)
+        e.preventDefault()
+      }
+    }
+  }
+
+  function handleProcurarUsuario(e: KeyboardEvent<HTMLInputElement> & FocusEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      const usuario = listaUsuariosSistema.filter(u => u.id === id)[0]
+      if (usuario) {
         setNome(usuario.nome)
         focus();
       } else {
@@ -73,14 +108,13 @@ export default function Home({ csrfToken }: HomeProps) {
     }
   }
 
-
   return (
     <div className={styles.container}>
       <Head>
         <title> Login </title>
       </Head>
       <>
-        <form className={styles.form} method='post' action="api/auth/callback/credentials">
+        <div className={styles.form}>
           <input name="csrfToken" type='hidden' defaultValue={csrfToken} />
           <label >Identificação</label>
           <div className={styles.identificacao}>
@@ -91,6 +125,7 @@ export default function Home({ csrfToken }: HomeProps) {
               name='id'
               value={id}
               onKeyDown={handleProcurarUsuario}
+              onBlur={handleProcurarUsuarioExit}
               onChange={e => setId(!e.target.value ? 0 : parseInt(e.target.value))} />
             <input
               readOnly={true}
@@ -108,13 +143,13 @@ export default function Home({ csrfToken }: HomeProps) {
             value={senha}
             ref={inputSenha}
             onChange={e => setSenha(e.target.value)}
-            onKeyDown={handleEntrar} />
+            onKeyDown={handleEntrarKeyDown} />
           <button
             id={constsComponents.button}
-            type='submit'
-            onClick={() => handleEntrar}
+            // type='submit'
+            onClick={handleEntrarClick}
           > Entrar </button>
-        </form>
+        </div>
       </>
     </div>
   )

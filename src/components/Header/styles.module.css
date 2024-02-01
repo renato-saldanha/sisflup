@@ -1,23 +1,21 @@
 .container {
   width: 100%;
   display: grid;
-  margin-top: 10px;  
+  margin-top: 10px;
   margin-bottom: 7px;
 }
 
 .container button {
-  margin-left: 25px;
+  margin-left: 1.4%;
 }
 
 .titulo {
-  margin-top: 50px;
   color: var(--white);
   border: 2px solid;
   border-radius: 4px;
   background-color: var(--blue-100);
   padding: 2px 7px;
-  display: flex;
-  margin: 0 25%;
+  margin: 9px 25%;
   display: grid;
   text-align: center;
 }
@@ -27,7 +25,6 @@
   align-items: center;
   justify-content: flex-end;
   width: 100%;
-  
 }
 
 .botaoSignOut {

@@ -9,7 +9,13 @@ export interface UsuarioProps {
 export interface AtividadeProps {
   id: number
   nome_cliente: string
-  endereco_cliente: string
+  cep: string
+  logradouro: string
+  numero: string
+  complemento: string
+  nome_bairro: string
+  cidade: string
+  uf: string
   nome_arquiteto: string
   data_entrega: string
   responsavel_vendas: string
@@ -52,8 +58,9 @@ export interface UsuarioPesquisaProps {
 export interface AtividadePesquisaProps {
   id: number
   nome_cliente: string
-  endereco_cliente: string
-  responsavel: string
+  logradouro: string
+  nome_bairro: string
+  responsavel_atual: string
   data_entrega: string
   setor_atual: string
 }

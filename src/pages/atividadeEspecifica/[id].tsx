@@ -14,14 +14,17 @@ import BotaoCheckDialog from '@/src/components/BotaoCheckDialog'
 import { constsComponents } from '@/src/uteis/constIdComponents'
 import { getSession } from 'next-auth/react'
 import { QueryClient, QueryClientProvider, useMutation, useQuery } from "@tanstack/react-query"
+import { Setores } from '@/src/uteis/enums'
 
 
 export default function AtividadeEspecifica() {
   const history = useRouter()
   const setorMenuProps: MenuSetorProps = history.query.setor ? JSON.parse(history.query.setor.toString()) : {}
+  const usuarioLogado: UsuarioProps = history.query.usuarioLogado ? JSON.parse(history.query.usuarioLogado.toString()) : {}
   const nomeTabela = setorMenuProps.nome.normalize('NFD').replace(/[\u0300-\u036f]/g, "") //Remove acentos
   const [listaAtividades, setListaAtividades] = useState<AtividadeProps[]>([])
 
+  const [checkBoxChecked, setCheckBoxChecked] = useState(false)
 
   const { data, error, isFetching, isPending, isSuccess } = useQuery<AtividadeProps[], Error>({
     queryKey: ['listaAtividades'],
@@ -40,7 +43,7 @@ export default function AtividadeEspecifica() {
         query: { atividade: JSON.stringify(atividade) }
       })
   }
-  
+
   function handleClickConcluirAtividade(atividade: AtividadeProps) {
     axios
       .put(`${config.server}/atividade/concluirAtividade`, atividade)
@@ -81,14 +84,16 @@ export default function AtividadeEspecifica() {
           >
             <>
               {atividade.responsavel_atual && atividade.responsavel_atual.length > 0 &&
-                <BotaoCheckDialog
+                (setorMenuProps.id === Setores.Vendas || setorMenuProps.id === Setores.Medicao) &&
+                (usuarioLogado.id_setor === Setores.Vendas || usuarioLogado.id_setor === Setores.Medicao)
+                && <BotaoCheckDialog
                   children={<input checked={false} defaultChecked={false} type='checkbox' />}
                   titulo="Deseja realmente concluir essa atividade?"
                   handleEvendo={() => handleClickConcluirAtividade(atividade)}
                 />}
             </>
             <p className={styles.detalheNome}> {atividade.nome_cliente} </p>
-            <p className={styles.detalheEndereco}> {atividade.endereco_cliente} </p>
+            <p className={styles.detalheEndereco}> {atividade.logradouro}, {atividade.nome_bairro}</p>
           </Button>
         ))}
       </div>

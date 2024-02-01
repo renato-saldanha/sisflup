@@ -53,24 +53,22 @@ export default function Consulta({ session }: ConsultaProps) {
       case 'usuarios':
         return [
           { descricao: 'Nome', filtro: "usuarios.nome" },
-          { descricao: 'Setor', filtro: "setor.nome" }
+          { descricao: 'Setor', filtro: "setores.nome" }
         ]
       case 'atividades':
         return [
-          { descricao: "Cliente", filtro: "usuarios.nome" },
-          { descricao: "Setor", filtro: "setor.nome" },
+          { descricao: "Cliente", filtro: "atividades.nome_cliente" },
+          { descricao: "Setor", filtro: "setores.nome" },
           { descricao: "Responsavel", filtro: "responsavel" },
-          { descricao: "Arquiteto", filtro: "atividades.nome_arquiteto" }
+          { descricao: "Arquiteto", filtro: "atividades.nome_arquiteto" },
+          { descricao: "Bairro", filtro: "bairros.nome_bairro" }
         ]
     }
   }
 
-
   useEffect(() => {
 
-
   }, [])
-
 
   function handleSelectFiltro(c: string) {
     const filtroSelecionado = filtrosDropdown()?.find(s => s.filtro.toLowerCase() === c.toLowerCase())
@@ -90,10 +88,9 @@ export default function Consulta({ session }: ConsultaProps) {
         if (r.data) setLista(r.data)
       })
       .catch(e => {
-        alert(e.response.data.resposta)
+        alert(e)
       })
   }
-
 
   return (
     <div className={styles.container}>
@@ -143,13 +140,13 @@ export default function Consulta({ session }: ConsultaProps) {
             </Command>
           </PopoverContent>
         </Popover>
-        <Button
+        <button
           id={constsComponents.button}
           className={styles.botaoPesquisar}
           onClick={() => handlePesquisar()}>
           <SearchIcon size={18} style={{ marginRight: 8 }} />
           Pesquisar
-        </Button>
+        </button>
       </div>
 
       {lista && nomeTabela === "Usuarios" && <ListaUsuarios session={session} lista={lista as UsuarioPesquisaProps[]} nomeTabela={nomeTabela} setLista={setLista} />}

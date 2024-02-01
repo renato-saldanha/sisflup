@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { config } from "../../../uteis/config";
 import { path } from "../../../uteis/constPath";
 import NextAuth from "next-auth/next";
+import axios from "axios";
 
 export default NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -18,12 +19,32 @@ export default NextAuth({
       // credentials: {},
       async authorize(credentials, req) {
         // Adicione lógica aqui para procurar o usuário a partir das credenciais fornecidas
+
+        // await axios
+        //   .post(`${config.server}/login`, credentials)
+        //   .then((r) => {
+        //     const usuarioData = JSON.parse(res);
+
+        //     if (res.status === 200) {
+        //       // console.log("Dados:", usuarioData.usuario)
+        //       const user = usuarioData.usuario;
+        //       return user;
+        //     }
+        //   })
+        //   .catch((e) => {
+        //     if (e.status === 404) throw new Error(JSON.stringify(e));
+        //   });
+
         const res = await fetch(`${config.server}/login`, {
           method: "POST",
           body: JSON.stringify(credentials),
           headers: { "Content-Type": "application/json" },
         });
-        
+
+        if (res.status === 404) {
+          if (e.status === 404) throw new Error(JSON.stringify(e));
+        }
+
         try {
           const usuarioData = await res.json();
 
@@ -67,9 +88,9 @@ export default NextAuth({
     },
   },
   pages: {
-    signIn: path.atividadesGerais,
+    // signIn: path.atividadesGerais,
     signOut: path.login,
-    error: path.login,
+    // error: path.login,
   },
   session: {
     strategy: "jwt",

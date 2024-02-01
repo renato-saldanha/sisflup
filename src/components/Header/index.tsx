@@ -30,9 +30,7 @@ export default function Header() {
         Sisflup - Sistema de fluxo de produção
       </h1>
       <div >
-        {(`${config.app}${pathName}` !== path.login && `${config.app}${pathName}` !== path.atividadesGerais) && <Button id={constsComponents.button} onClick={() => history.back()}>Voltar</Button>}
-
-        
+        {(`${config.app}${pathName}` !== path.login && `${config.app}${pathName}` !== path.atividadesGerais) && <Button id={constsComponents.button} onClick={() => history.back()}>Voltar</Button>}        
       </div>
     </div >
   )

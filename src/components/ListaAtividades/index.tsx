@@ -57,8 +57,8 @@ export default function ListaAtividades({ session, lista, nomeTabela, setLista }
             className={styles.tableRow}>
             <TableCell className={styles.colunaId}>{item.id}</TableCell>
             <TableCell className={styles.colunaCliente}>{item.nome_cliente}</TableCell>
-            <TableCell className={styles.colunaEndereco}>{item.endereco_cliente}</TableCell>
-            <TableCell className={styles.colunaResponsavel}>{item.responsavel}</TableCell>
+              <TableCell className={styles.colunaEndereco}>{item.logradouro}, {item.nome_bairro}</TableCell>
+            <TableCell className={styles.colunaResponsavel}>{item.responsavel_atual}</TableCell>
             <TableCell className={styles.colunaDataEntrega}>{getDataLocal(item.data_entrega)}</TableCell>
             {usuarioLogado?.id_permissao === PERMISSAO_ADMIN && (
               <TableCell className={styles.colunaBotoes}>

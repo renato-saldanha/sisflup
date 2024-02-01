@@ -1,10 +1,9 @@
 .tabela {
   justify-content: left;
-  margin-top: 20px;
-  margin: 20px calc(15vw + 100px) 0 0;
+  margin-top: 10px;
   color: var(--white);
   border-collapse: collapse;
-  width: 80%;  
+  width: 100%;
   flex-direction: column;
 }
 
@@ -19,32 +18,39 @@
 .colunaPermissao,
 .colunaBotoes {
   border: 1px solid;
-  padding: 0 15px 0 5px;
   font-size: 16px;
 }
 
+.colunaId,
+.colunaNome,
+.colunaSetor,
+.colunaPermissao {
+  padding: 0 15px 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .colunaId {
-  width: 45px;
+  width: 6.2%;
   text-align: center;
   padding: 0;
-  flex: .1
 }
 
 .colunaNome {
-  width: 350px;
-  max-width: 400px;
+  width: 40%;
 }
 .colunaSetor {
-  width: 190px;
+  width: 25%;
 }
 
 .colunaPermissao {
-  width: 150px;
+  width: 19%;
 }
 
 .colunaBotoes {
   display: flex;
-  width: 120px;
+  width: 11%;
   align-items: center;
   justify-content: space-around;
 }

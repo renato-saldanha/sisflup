@@ -1,6 +1,8 @@
 .container {
-  width: 100%;
-  padding: 0 25px;
+  display: flex;
+  flex-direction: column;
+  max-width: 1324px;
+  padding: 0 1.4%;
 }
 
 .botoesHeader {
@@ -9,24 +11,51 @@
 
 .camposPesquisa {
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  margin: 20px calc(15vw + 100px) 0 0;
+  margin-top: 10px;
 }
 
-.camposPesquisa label,
+@media (max-width: 768px) {
+  .container {
+    padding: 0 2.8%;
+  }
+  /* Caso seja visualizado em celular, joga a side para cima */
+  .camposPesquisa {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: 2fr;
+    font-size: 87.5%;
+  }
+  .camposPesquisa label,
+  .camposPesquisa button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+
+.camposPesquisa input {
+  /* margin: 0 5px; */
+  width: 100%;
+}
+
 .camposPesquisa button,
 .camposPesquisa input {
-  margin: 0 10px;
+  /* margin: 0 10px; */
 }
+
+.camposPesquisa label {
+  margin-right: 8px;
+}
+
 
 .camposPesquisa input {
-  flex: 3.2;
-}
-
-.botaoDropDown {
-  flex: 1.6;
+  margin-right: 8px;  
 }
 
 .botaoPesquisar {
-  flex: 1;
+  margin-left: 8px;  
 }
+
