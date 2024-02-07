@@ -24,8 +24,6 @@ export default function AtividadeEspecifica() {
   const nomeTabela = setorMenuProps.nome.normalize('NFD').replace(/[\u0300-\u036f]/g, "") //Remove acentos
   const [listaAtividades, setListaAtividades] = useState<AtividadeProps[]>([])
 
-  const [checkBoxChecked, setCheckBoxChecked] = useState(false)
-
   const { data, error, isFetching, isPending, isSuccess } = useQuery<AtividadeProps[], Error>({
     queryKey: ['listaAtividades'],
     queryFn: () =>

@@ -108,3 +108,4 @@ producao/server/pages/api/auth/[...nextauth].js
 producao/cache/webpack/client-development/5.pack.gz
 producao/cache/webpack/server-development/3.pack.gz
 producao/server/pages/api/auth/[...nextauth].js
+.env
